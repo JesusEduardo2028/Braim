@@ -1,0 +1,10 @@
+= simple_form_for(@song) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :name
+    = f.input :duration
+    = f.input :file, type: :file
+
+  .form-actions
+    = f.button :submit

@@ -1,0 +1,21 @@
+%p#notice= notice
+
+%p
+  Timestamp:
+  =@player_entry.timestamp
+%p
+  Song ID:
+  =@player_entry.song_id
+%p
+  Action
+  =@player_entry.action
+%p
+  user:
+  =@player_entry.emo_session.user.username
+%p
+  State:
+  =@player_entry.player_state
+
+= link_to 'Edit', edit_player_entry_path(@player_entry)
+\|
+= link_to 'Back', player_entries_path

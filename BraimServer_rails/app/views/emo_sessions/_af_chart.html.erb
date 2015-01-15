@@ -1,0 +1,111 @@
+<script type="text/javascript">
+  $(function () {
+    Highcharts.setOptions({
+      global: {
+        timezoneOffset: 5*60
+      }
+    });
+    $('#emo_stock').highcharts('StockChart', {
+      rangeSelector : {
+          selected : 1
+      },
+
+      title : {
+          text : "<%=@emo_session.user.username%> session at: <%=@emo_session.date%>"
+      },
+      chart : {
+        height: 500,
+      },
+      legend: { enabled: true},
+      rangeSelector: {
+        selected: 0,
+        buttons: [{
+          type: 'second',
+          count: 10,
+          text: '10s'
+        },{
+          type: 'second',
+          count: 60,
+          text: '1m'
+        },{
+          type: 'minute',
+          count: 10,
+          text: '10m'
+        },{
+          type: 'all',
+          text: 'All'
+        }],
+        inputDateFormat: '%H:%M:%S.%L',
+        inputEditDateFormat: '%H:%M:%S.%L',
+        // Custom parser to parse the %H:%M:%S.%L format
+        inputDateParser: function (value) {
+            value = value.split(/[:\.]/);
+            return Date.UTC(
+                1970,
+                0,
+                1,
+                parseInt(value[0], 10),
+                parseInt(value[1], 10),
+                parseInt(value[2], 10),
+                parseInt(value[3], 10)
+            );
+        }
+      },
+      xAxis:{
+        tickPixelInterval: 200,
+        dateTimeLabelFormats:{
+          millisecond: '%H:%M:%S'
+        },
+        plotBands:[
+          <%@player_entries.each_with_index do|entry,i|%>
+            <% if entry.action == :play%>
+              {
+                from: (new Date(<%=entry.timestamp%>)),
+                to: (new Date(<%=@player_entries[i+1] ? @player_entries[i+1].timestamp : @emo_entries[-1].timestamp%>)),
+                color: "rgba(<%=rand(255)%>,<%=rand(255)%>,<%=rand(255)%>,0.1)",
+                label: {
+                  text: "<%=entry.song.name%>",
+                  align: "center",
+                  verticalAlign: "top"
+                },
+                zIndex: 0
+              },
+            <%end%>
+          <%end%>
+        ],
+
+      },
+      tooltip:{
+        dateTimeLabelFormats: {
+          millisecond:"%A - %b %e, %H:%M:%S.%L",
+          second:"%A, %b %e, %H:%M:%S",
+        }
+      },
+      navigator: {
+        xAxis:{
+          dateTimeLabelFormats:{
+            millisecond: '%H:%M:%S.%L'
+          }
+        }
+        //series: {
+        //  data: <%=@player_timeline%>,
+        //  type: 'line'
+        //}
+      },
+      series : [{
+        name : 'Excitement',
+        data : <%=@data_excitement%>,
+      },{
+        name : 'Meditation',
+        data : <%=@data_meditation%>,
+      },{
+        name : 'Engagement',
+        data : <%=@data_engagement%>,
+      },{
+        name : 'Frustration',
+        data : <%=@data_frustration%>,
+      }]
+    });
+  });
+
+</script>

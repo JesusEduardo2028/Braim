@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @band.name
+%p
+  %b Genre:
+  = @band.genre
+%p
+  %b Biography:
+  = @band.biography
+
+= link_to 'Edit', edit_band_path(@band)
+\|
+= link_to 'Back', bands_path

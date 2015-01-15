@@ -1,0 +1,17 @@
+%h1 Listing emo_entries
+
+%table
+  %tr
+    %th
+    %th
+    %th
+
+  - @emo_entries.each do |emo_entry|
+    %tr
+      %td= link_to 'Show', emo_entry
+      %td= link_to 'Edit', edit_emo_entry_path(emo_entry)
+      %td= link_to 'Destroy', emo_entry, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Emo entry', new_emo_entry_path

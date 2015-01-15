@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @song.name
+%p
+  %b Duration:
+  = @song.duration
+%p
+  %b File
+  =link_to @song.file_url, @song.file_url
+
+= link_to 'Edit', edit_song_path(@song)
+\|
+= link_to 'Back', songs_path

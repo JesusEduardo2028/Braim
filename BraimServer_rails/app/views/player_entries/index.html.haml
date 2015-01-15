@@ -1,0 +1,17 @@
+%h1 Listing player_entries
+
+%table
+  %tr
+    %th
+    %th
+    %th
+
+  - @player_entries.each do |player_entry|
+    %tr
+      %td= link_to 'Show', player_entry
+      %td= link_to 'Edit', edit_player_entry_path(player_entry)
+      %td= link_to 'Destroy', player_entry, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Player entry', new_player_entry_path

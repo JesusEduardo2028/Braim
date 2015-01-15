@@ -1,0 +1,10 @@
+{
+  "name": "Braim_Server",
+  "version": "0.0.1",
+  "dependencies": {
+    "datetimejs": "^0.3.4",
+    "express": "^4.10.2",
+    "mongojs": "^0.17.0",
+    "socket.io": "^1.2.0"
+  }
+}

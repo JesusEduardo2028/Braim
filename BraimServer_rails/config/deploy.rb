@@ -2,7 +2,7 @@
 
 
 set :git_strategy, RemoteCacheWithProjectRootStrategy
-set :project_root, 'Braim/BraimServer_rails'
+set :project_root, 'BraimServer_rails'
 
 set :application, 'Braim'
 set :repo_url, 'git@github.com:JesusEduardo2028/Braim.git'

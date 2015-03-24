@@ -1,6 +1,8 @@
 # config valid only for Capistrano 3.1
 
-set :deploy_subdir, "Braim/BraimServer_rails"
+
+set :git_strategy, RemoteCacheWithProjectRootStrategy
+set :project_root, 'Braim/BraimServer_rails'
 
 set :application, 'Braim'
 set :repo_url, 'git@github.com:JesusEduardo2028/Braim.git'

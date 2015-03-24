@@ -42,6 +42,8 @@ config/database.yml
 config/env.yml
 config/app_config.yml
 config/mongoid.yml
+config/secrets.yml
+
 
 *.log
 tmp/

@@ -495,7 +495,7 @@ public class BraimGui extends javax.swing.JFrame {
                 .addGroup(tab_panel_dataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(tab_panel_dataLayout.createSequentialGroup()
                         .addComponent(txt_node_8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(txt_node_9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txt_node_10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -712,7 +712,7 @@ public class BraimGui extends javax.swing.JFrame {
         );
         tab_panel_recommendationLayout.setVerticalGroup(
             tab_panel_recommendationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 333, Short.MAX_VALUE)
+            .addGap(0, 341, Short.MAX_VALUE)
         );
 
         tab_panel.addTab("Recommendation", tab_panel_recommendation);

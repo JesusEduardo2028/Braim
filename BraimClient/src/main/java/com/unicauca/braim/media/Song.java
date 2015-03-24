@@ -17,7 +17,7 @@ public class Song {
     private String url;
     private String author;
     private String duration;
-    private static final String main_url = "http://braim-rails-dev.com:3000";
+    private static final String main_url = Util.server_url;
 
     public Song() {
     }

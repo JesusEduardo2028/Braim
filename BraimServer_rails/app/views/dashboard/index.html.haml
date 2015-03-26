@@ -1,12 +1,23 @@
-.dashboard
-  .row
-    .col-md-3
-      .side-bar
-        = render 'side_bar'
-    .col-md-9
-      .main-content
-        %ul
-          -@emo_sessions.each do|session|
-            %li  
-              =link_to "Session #{session.date}", session
-        
+.dashboard.container
+  %br
+  .main-content
+    %table.table.table-bordered
+      %thead
+        %tr
+          %th #
+          %th Date
+          %th Raw data
+          %th Emotional data
+
+      %tbody
+        -@emo_sessions.each_with_index do|session,i|
+          %tr
+            %th{:scope => "row"}
+              = i
+            %td
+              =session.date
+            %td
+              =link_to "view", affectiv_emo_session_path(session)
+            %td
+              =link_to "view",raw_emo_session_path(session)
+

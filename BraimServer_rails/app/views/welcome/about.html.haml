@@ -1,0 +1,25 @@
+.site-wrapper
+  .site-wrapper-inner
+    .cover-container
+      .masthead.clearfix
+        .inner
+          %h3.masthead-brand= t(".braim")
+          %ul.nav.masthead-nav
+            %li
+              %a{:href => root_path}= t(".home")
+            %li.active
+              %a{:href => about_path}= t(".about_braim")
+            %li
+              %a{:href => setup_path}= t(".setup")
+      .inner
+        .row
+          .col-md-6
+            %h2 What is BraiM?
+            %p Braim is a tool for collect EEg data from your Emotiv epoc device while listening to your favorite music 
+            
+            %h2 How it works?
+            %p  
+              It uses a Client - Server Arquitechture, just create a user profile and download the client application
+              = link_to "Using this link" ,setup_path 
+          .col-md-6
+            =image_tag "braim_test.png", class: "img-responsive"

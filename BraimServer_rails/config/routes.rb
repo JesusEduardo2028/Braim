@@ -20,11 +20,12 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'welcome#index'
+  get 'about' =>  "welcome#about"
+  get 'setup' => "welcome#setup"
 
   get 'ping' => 'welcome#ping'
 
   get 'dashboard' => 'dashboard#index'
-
   mount API => '/'
   mount GrapeSwaggerRails::Engine => '/api_doc'
 

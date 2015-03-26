@@ -18,10 +18,10 @@ en:
   welcome:
     index:
       all_rights_reserved: All rights reserved
-      generic: Generic
-      contact: Contact
-      demo_app_description: This is a demo application.
-      demo_application: Foo Application
+      braim: BraiM
+      about_braim: About Braim
+      setup: Setup
+      demo_application: Braim
       home: Home
       about_us: About Us
       sign_in: Sign In

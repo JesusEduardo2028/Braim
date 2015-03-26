@@ -11,15 +11,5 @@
               %a{:href => about_path}= t(".about_braim")
             %li
               %a{:href => setup_path}= t(".setup")
-      .inner.cover
-        %h1.cover-heading= t(".demo_application")
-        %p.lead= t(".demo_app_description")
-        %p.lead
-          %a.btn.btn-lg.btn-primary{:href => new_user_session_path}= t(".sign_in")
-        .mastfoot
-          .inner
-            %p
-              = t(".all_rights_reserved")
-              = succeed "," do
-                %a{:href => "#"}= t(".generic")
-
+      .inner
+        %setup

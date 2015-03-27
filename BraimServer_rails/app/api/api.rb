@@ -36,6 +36,7 @@ class API < Grape::API
   mount Songbook::Modules::Band
   mount Songbook::Modules::User
   mount Songbook::Modules::Song
+  mount Songbook::Modules::Session
   # Adds the swagger documentation to your
   # api. You only need this once, not in
   # every sub module

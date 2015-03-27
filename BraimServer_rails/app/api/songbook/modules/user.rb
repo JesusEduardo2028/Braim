@@ -1,10 +1,7 @@
 module Songbook
   module Modules
     class User < Grape::API
-      include Grape::Transformations::Base
-
-      target_model ::User
-
+      
       format :json
 
       content_type :json, 'application/json'
@@ -30,43 +27,72 @@ module Songbook
         authenticated_user?
       end
 
-      define_endpoints do |entity|
-        desc 'returns all existent users', {
-          entity: entity,
-          notes: <<-NOTES
-            ##Description
-          NOTES
-        }
-        params do
-          use :auth
-        end
-        get '/', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
-          content_type "text/json"
-          page = params[:page] || 1
-          per_page = params[:per_page] || 10
-          WillPaginate.per_page = per_page
-          users = ::User.page(page)
-          present users, with: entity
-        end
-        desc 'returns all existent users', {
-          entity: entity,
-          notes: <<-NOTES
-            ##Description
-          NOTES
-        }
-        params do
-          use :auth
-        end
-        get '/:id', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
-          content_type "text/json"
-          user = ::User.find(params[:id])
-          present user, with: entity
-        end
-      end
-
       version :v1 do
         resource :users do
-          add_endpoints
+          desc 'returns all existent users', {
+            entity: Songbook::Entities::User,
+            notes: <<-NOTES
+              ### All paginated users
+            NOTES
+          }
+          params do
+            use :auth
+            use :pagination
+          end
+          get '/', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
+            content_type "text/json"
+            page = params[:page] || 1
+            per_page = params[:per_page] || 10
+            WillPaginate.per_page = per_page
+            users = ::User.page(page)
+            present users, with: Songbook::Entities::User
+          end
+          desc 'returns a user', {
+            entity: Songbook::Entities::User,
+            notes: <<-NOTES
+              returns user information
+            NOTES
+          }
+          params do
+            use :auth
+            use :id
+          end
+          get '/:id', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
+            content_type "text/json"
+            user = ::User.find(params[:id])
+            present user, with:  Songbook::Entities::User
+          end
+          desc 'returns list of sessions from a user', {
+            entity: Songbook::Entities::Session,
+            notes: <<-NOTES
+               ### Description
+                It returns all sessions from a user
+
+                ### Example successful response
+                    [
+                      {
+                        "id":"548f1e03f080c0b76fffd507",
+                        "start_at":1418665475068.0,
+                        "user_id":"548f1ddd6a65737080000000"
+                      },
+                      {
+                        "id":"548f25b2f080c0b76fffd5a9",
+                        "start_at":1418667442636.0,
+                        "user_id":"548f1ddd6a65737080000000"
+                      }
+                    ]
+
+            NOTES
+          }
+          params do
+            use :auth
+            use :id
+          end
+          get '/:id/sessions', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
+            content_type "text/json"
+            user = ::User.find(params[:id])
+            present user.emo_sessions, with:  Songbook::Entities::Session
+          end
         end
       end
     end

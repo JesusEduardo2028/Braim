@@ -29,7 +29,7 @@ module Songbook
               entity: Songbook::Entities::Song,
               notes: <<-NOTE
                 ### Description
-                It returns all paginated songs.  by default: page = 1 per_page = 10
+                  It returns all paginated songs.  by default: page = 1 per_page = 10
 
                 ### Example successful response
 

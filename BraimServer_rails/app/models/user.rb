@@ -55,4 +55,19 @@ class User
     Devise.secure_compare(record.rememberable_value, remember_token)
   end
 
+  def all_emo_entries
+    entries = []
+    emo_sessions.each do|session|
+      entries = entries.concat session.emo_entries
+    end
+    return entries
+  end
+
+  def all_player_entries
+    entries = []
+    emo_sessions.each do|session|
+      entries = entries.concat session.player_entries
+    end
+    return entries
+  end
 end

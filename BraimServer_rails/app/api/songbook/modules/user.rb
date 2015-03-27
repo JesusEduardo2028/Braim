@@ -24,7 +24,7 @@ module Songbook
       end
 
       before_validation do
-        authenticated_user?
+        #authenticated_user?
       end
 
       version :v1 do
@@ -36,7 +36,7 @@ module Songbook
             NOTES
           }
           params do
-            use :auth
+            #use :auth
             use :pagination
           end
           get '/', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
@@ -54,7 +54,7 @@ module Songbook
             NOTES
           }
           params do
-            use :auth
+            #use :auth
             use :id
           end
           get '/:id', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
@@ -62,7 +62,7 @@ module Songbook
             user = ::User.find(params[:id])
             present user, with:  Songbook::Entities::User
           end
-          desc 'returns list of sessions from a user', {
+          desc 'returns all sessions from a user', {
             entity: Songbook::Entities::Session,
             notes: <<-NOTES
                ### Description
@@ -85,13 +85,76 @@ module Songbook
             NOTES
           }
           params do
-            use :auth
+            #use :auth
             use :id
           end
           get '/:id/sessions', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
             content_type "text/json"
             user = ::User.find(params[:id])
+
             present user.emo_sessions, with:  Songbook::Entities::Session
+          end
+          desc 'returns all emotional entries from a given user', {
+            entity: Songbook::Entities::Session,
+            notes: <<-NOTES
+               ### Description
+                CAUTIONNN THIS MAY TAKE TIME!!!!!
+                It returns all emotional entries from a user
+
+                ### Example successful response
+                    [
+                      {
+                        emo entry item
+                      },
+                        emo entry item
+                      {
+                    ]
+            NOTES
+          }
+          params do
+            #use :auth
+            use :pagination
+            use :id
+          end
+          get '/:id/all_emo_entries', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
+            content_type "text/json"
+            user = ::User.find(params[:id])
+            page = params[:page] || 1
+            per_page = params[:per_page] || 10
+            WillPaginate.per_page = per_page
+            entries = user.all_emo_entries
+            present entries, with:  Songbook::Entities::EmoEntry
+          end
+          desc 'returns all player entries from a given user', {
+            entity: Songbook::Entities::Session,
+            notes: <<-NOTES
+               ### Description
+                CAUTIONNN THIS MAY TAKE TIME!!!!!
+                It returns all player entries from a session
+
+                ### Example successful response
+                    [
+                      {
+                        player entry item
+                      },
+                        player entry item
+                      {
+                    ]
+            NOTES
+          }
+          params do
+            #use :auth
+            use :pagination
+            use :id
+          end
+          get '/:id/all_player_entries', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
+            content_type "text/json"
+            user = ::User.find(params[:id])
+            page = params[:page] || 1
+            per_page = params[:per_page] || 10
+            WillPaginate.per_page = per_page
+            entries = user.all_player_entries
+            present entries , with:  Songbook::Entities::PlayerEntry
           end
         end
       end

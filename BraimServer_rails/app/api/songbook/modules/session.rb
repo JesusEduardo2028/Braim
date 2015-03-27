@@ -24,7 +24,7 @@ module Songbook
       end
 
       before_validation do
-        authenticated_user?
+        #authenticated_user?
       end
 
       version :v1 do
@@ -36,7 +36,7 @@ module Songbook
             NOTES
           }
           params do
-            use :auth
+            #use :auth
             use :pagination
           end
           get '/', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
@@ -54,13 +54,63 @@ module Songbook
             NOTES
           }
           params do
-            use :auth
+            #use :auth
             use :id
           end
           get '/:id', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
             content_type "text/json"
             session = ::EmoSession.find(params[:id])
             present session, with: Songbook::Entities::Session
+          end
+          desc 'returns all emotional entries from a given session', {
+            entity: Songbook::Entities::Session,
+            notes: <<-NOTES
+               ### Description
+                It returns all emotional entries from a session
+
+                ### Example successful response
+                    [
+                      {
+                        emo entry item
+                      },
+                        emo entry item
+                      {
+                    ]
+            NOTES
+          }
+          params do
+            #use :auth
+            use :id
+          end
+          get '/:id/emo_entries', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
+            content_type "text/json"
+            session = ::EmoSession.find(params[:id])
+            present session.emo_entries, with:  Songbook::Entities::EmoEntry
+          end
+          desc 'returns all player entries from a given session', {
+            entity: Songbook::Entities::Session,
+            notes: <<-NOTES
+               ### Description
+                It returns all player entries from a session
+
+                ### Example successful response
+                    [
+                      {
+                        player entry item
+                      },
+                        player entry item
+                      {
+                    ]
+            NOTES
+          }
+          params do
+            #use :auth
+            use :id
+          end
+          get '/:id/player_entries', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
+            content_type "text/json"
+            session = ::EmoSession.find(params[:id])
+            present session.player_entries, with:  Songbook::Entities::PlayerEntry
           end
         end
       end

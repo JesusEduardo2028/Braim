@@ -19,7 +19,7 @@ module Songbook
 		  end
 	    
 	    before_validation do
-	      authenticated_user?
+	      #authenticated_user?
 	    end
 
 	    version :v1 do
@@ -51,7 +51,7 @@ module Songbook
             }
           params do
             use :pagination
-            use :auth
+            #use :auth
           end
 
           get '/', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
@@ -62,8 +62,7 @@ module Songbook
             songs = ::Song.page(page)
             present songs
           end
-
-     		end
+        end
      	end
     end
   end

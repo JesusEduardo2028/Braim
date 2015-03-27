@@ -33,7 +33,7 @@ class API < Grape::API
   # modules like this
   mount Songbook::Modules::Ping
   mount Songbook::Modules::Token
-  mount Songbook::Modules::Band
+  #mount Songbook::Modules::Band
   mount Songbook::Modules::User
   mount Songbook::Modules::Song
   mount Songbook::Modules::Session

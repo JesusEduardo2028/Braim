@@ -10,8 +10,8 @@ class API < Grape::API
     def authenticated
       if warden.authenticated?
         return true
-      elsif params[:songbook_token] and
-          AccessGrant.find_access(params[:songbook_token])
+      elsif params[:braim_token] and
+          AccessGrant.find_access(params[:braim_token])
         return true
       else
         error!('401 Unauthorized', 401)
@@ -19,7 +19,7 @@ class API < Grape::API
     end
 
     def current_user
-      warden.user || AccessGrant.find_access(params[:songbook_token]).try(:user)
+      warden.user || AccessGrant.find_access(params[:braim_token]).try(:user)
     end
 
     # returns 401 if there's no current user

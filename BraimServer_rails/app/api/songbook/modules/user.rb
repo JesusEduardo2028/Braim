@@ -14,17 +14,21 @@ module Songbook
         end
 
         params :auth do
-          requires :songbook_token, type: String, desc: 'Auth token', documentation: { example: '837f6b854fc7802c2800302e' }
+          requires :braim_token, type: String, desc: 'Auth token', documentation: { example: '837f6b854fc7802c2800302e' }
         end
 
         params :id do
           requires :id, type: String, desc: 'User ID', regexp: /^[[:xdigit:]]{24}$/
         end
 
+        params :username do
+          requires :username , type: String, desc: 'Username'
+        end
+
       end
 
       before_validation do
-        #authenticated_user?
+        authenticated_user?
       end
 
       version :v1 do
@@ -36,7 +40,7 @@ module Songbook
             NOTES
           }
           params do
-            #use :auth
+            use :auth
             use :pagination
           end
           get '/', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
@@ -47,19 +51,19 @@ module Songbook
             users = ::User.page(page)
             present users, with: Songbook::Entities::User
           end
-          desc 'returns a user', {
+          desc 'returns a user by username', {
             entity: Songbook::Entities::User,
             notes: <<-NOTES
               returns user information
             NOTES
           }
           params do
-            #use :auth
-            use :id
+            use :auth
+            use :username
           end
-          get '/:id', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
+          get '/:username', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
             content_type "text/json"
-            user = ::User.find(params[:id])
+            user = ::User.find_by(username: params[:username])
             present user, with:  Songbook::Entities::User
           end
           desc 'returns all sessions from a user', {
@@ -86,11 +90,11 @@ module Songbook
           }
           params do
             #use :auth
-            use :id
+            use :username
           end
-          get '/:id/sessions', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
+          get '/:username/sessions', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
             content_type "text/json"
-            user = ::User.find(params[:id])
+            user = ::User.find_by(params[:username])
 
             present user.emo_sessions, with:  Songbook::Entities::Session
           end

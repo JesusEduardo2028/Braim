@@ -40,8 +40,12 @@ class User
   # validates user credentials
   # @return User
   validates :username, format: { with: /\A[a-zA-Z0-9]+\Z/ }, uniqueness: true
-  def self.authenticate(email, password)
-    User.find_by(email: email) if User.find_by(email: email).try(:valid_password?, password)
+  def self.authenticate(data, password)
+    begin
+      return User.find_by(username: data) if User.find_by(username: data).try(:valid_password?, password)
+    rescue
+      return User.find_by(email: data) if User.find_by(email: data).try(:valid_password?, password)     
+    end
   end
 
   def self.serialize_from_session(key, salt)

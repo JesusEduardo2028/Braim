@@ -3,7 +3,7 @@ describe 'Band', :type => :request do
   describe :v1 do
 
     context 'bands', :keep_db do
-
+=begin
       before :context do
         @user = FactoryGirl.create :user, email: 'allam.britto@fake.com', password: '12345678', password_confirmation: '12345678'
         FactoryGirl.create_list(:band, 20)
@@ -65,7 +65,7 @@ describe 'Band', :type => :request do
           expect(JSON.parse(response.body).except('id')).to match(expected_response.stringify_keys)
         end
       end
-
+=end
     end
 
   end

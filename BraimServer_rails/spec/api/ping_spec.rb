@@ -13,13 +13,13 @@ describe 'Ping', :type => :request do
 
     before :context do
       FactoryGirl.create :user, email: 'allam.britto@fake.com', password: '12345678', password_confirmation: '12345678'
-      get '/api/v1/token', %Q{email=allam.britto@fake.com&password=12345678}
+      get '/api/v1/token', %Q{data=allam.britto@fake.com&password=12345678}
       @credentials = JSON.parse response.body
     end
 
     context 'ping when credentials are valid' do
       it 'ping' do
-        get '/api/v1/protected_ping', "songbook_token=#{@credentials['access_token']}"
+        get '/api/v1/protected_ping', "braim_token=#{@credentials['access_token']}"
         expect(response.body).to eq({ ping: 'pong' }.to_json)
       end
     end
@@ -27,7 +27,7 @@ describe 'Ping', :type => :request do
     context 'ping when credentials are invalid' do
       it 'returns 401 - unauthorized' do
         expected_response = { error: '401 Unauthorized' }
-        get '/api/v1/protected_ping', "songbook_token=#{@credentials['access_token'].reverse}"
+        get '/api/v1/protected_ping', "braim_token=#{@credentials['access_token'].reverse}"
         expect(response.status).to eq 401
         expect(response.body).to match JSON.dump expected_response
       end

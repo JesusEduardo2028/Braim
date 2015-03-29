@@ -3,6 +3,7 @@ package com.unicauca.braim.braimclient;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+import com.google.gson.Gson;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.unicauca.braim.emotiv.Edk;
@@ -10,6 +11,7 @@ import com.unicauca.braim.emotiv.EdkErrorCode;
 import com.unicauca.braim.emotiv.EmoState;
 import com.unicauca.braim.http.HttpBraimClient;
 import com.unicauca.braim.media.MusicPlayer;
+import com.unicauca.braim.media.Session;
 import com.unicauca.braim.media.Song;
 import com.unicauca.braim.media.Token;
 import com.unicauca.braim.media.User;
@@ -96,8 +98,9 @@ public class BraimGui extends javax.swing.JFrame {
 
             @Override
             public void call(Object... args) {
-                System.out.println("Connected to Braim Server");
-                lbl_username.setText("New user connected...");
+                lbl_status.setText("Connected to Braim Server");
+                lbl_status.setForeground(Color.GREEN);
+                lbl_username.setText(currentUser.getUsername());
                 enable_panels(true);
             }
         });
@@ -122,25 +125,18 @@ public class BraimGui extends javax.swing.JFrame {
             public void call(Object... os) {
                 lbl_username.setText(os[0].toString());
                 menu_item_emo_device.setEnabled(false);
-                lbl_status.setText("Connected to Braim Server");
-                lbl_status.setForeground(Color.GREEN);
                 (emotivTask = new EmotivEngineTask()).execute();
             }
         } );
         
-        
-        
         try {
-            int status = client.getConnectionStatus();
-            if(status == HttpStatus.SC_OK){
-                socket.connect();
-                socket.emit("join", currentUser.getEmail());
-            }else{
-                throw new IOException();
-            }
+            Session session = client.POST_Session(currentUser.getId(), token.getAccess_token());
+            socket.connect();
+            String session_json = new Gson().toJson(session);
+            socket.emit("register_session", session_json);
         } catch (IOException ex) {
             Logger.getLogger(BraimGui.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(null, "There is a problem with the Internet connection!");
+            JOptionPane.showMessageDialog(null, ex.getMessage());
             socket.disconnect();
         }
         

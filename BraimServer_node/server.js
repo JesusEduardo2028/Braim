@@ -29,28 +29,14 @@ var storePlayerData = function(data,session_date){
 	
 }
 
-var createEmoSession = function(email,client){
-	db.users.find({email:email},function(err,docs){
-		user = docs[0]
-		session = {
-			start_at: new Date().getTime(),
-			user_id: user['_id']
-		}
-
-		db.emo_sessions.save(session,function(){
-			console.log('session saved!');
-			client.session_date = session["start_at"]
-		});
-	});
-}
 
 io.on('connection', function(client){
 	//console.log('Client connected..');
-	client.on('join',function(email){
-		client.email = email;
-		console.log(email+" join in to the app");
-		client.emit('user added', email);
-		createEmoSession(email,client);
+	client.on('register_session',function(session){
+		session_json = JSON.parse(session)
+		client.session_id = session_json["id"];
+		client.user_id = session_json["user_id"]
+		console.log("NEW sesion:"+client.session_id+"user:"+client.user_id);
 	});
 
 	client.on('disconnect',function(name){
@@ -59,6 +45,7 @@ io.on('connection', function(client){
 	client.on('add_emo_info',function(emo_values){
 		if(emo_values!=null){
 			emo_values["email"] = client.email;
+			emo_values
 			storeEmoData(emo_values,client.session_date);
 			//console.log(emo_values);
 		}

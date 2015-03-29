@@ -7,6 +7,7 @@ package com.unicauca.braim.http;
 
 import com.google.gson.Gson;
 import com.sun.org.apache.bcel.internal.Constants;
+import com.unicauca.braim.media.Session;
 import com.unicauca.braim.media.Song;
 import com.unicauca.braim.media.Token;
 import com.unicauca.braim.media.User;
@@ -117,4 +118,33 @@ public class HttpBraimClient {
 
         return user;
     }
+    
+    public Session POST_Session(String user_id, String access_token) throws IOException {
+        Session session = null;
+        Gson gson = new Gson();
+        
+        String data= "?session[user_id]="+user_id;
+        String token_data = "&braim_token=" + access_token;
+        
+        
+        PostMethod method = new PostMethod(api_url + "/api/v1/sessions");
+        method.addParameter("session[user_id]",user_id);
+        method.addParameter("braim_token",access_token);
+        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                new DefaultHttpMethodRetryHandler(3, false));
+
+        int statusCode = client.executeMethod(method);
+        if (statusCode != HttpStatus.SC_CREATED) {
+            System.err.println("Method failed: " + method.getStatusLine());
+            throw new IOException("The session was not being created");
+        }
+
+        byte[] responseBody = method.getResponseBody();
+        String response = new String(responseBody, "UTF-8");
+        session = gson.fromJson(response, Session.class);
+        System.out.println("new session of"+session.getUser_id() + "was created");
+
+        return session;
+    }
+    
 }

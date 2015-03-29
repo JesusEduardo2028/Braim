@@ -14,7 +14,7 @@ module Songbook
         end
 
         params :auth do
-          requires :songbook_token, type: String, desc: 'Auth token', documentation: { example: '837f6b854fc7802c2800302e' }
+          requires :braim_token, type: String, desc: 'Auth token', documentation: { example: '837f6b854fc7802c2800302e' }
         end
 
         params :id do
@@ -24,7 +24,7 @@ module Songbook
       end
 
       before_validation do
-        #authenticated_user?
+        authenticated_user?
       end
 
       version :v1 do
@@ -36,7 +36,7 @@ module Songbook
             NOTES
           }
           params do
-            #use :auth
+            use :auth
             use :pagination
           end
           get '/', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
@@ -54,7 +54,7 @@ module Songbook
             NOTES
           }
           params do
-            #use :auth
+            use :auth
             use :id
           end
           get '/:id', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
@@ -79,7 +79,7 @@ module Songbook
             NOTES
           }
           params do
-            #use :auth
+            use :auth
             use :id
           end
           get '/:id/emo_entries', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
@@ -104,7 +104,7 @@ module Songbook
             NOTES
           }
           params do
-            #use :auth
+            use :auth
             use :id
           end
           get '/:id/player_entries', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
@@ -112,6 +112,46 @@ module Songbook
             session = ::EmoSession.find(params[:id])
             present session.player_entries, with:  Songbook::Entities::PlayerEntry
           end
+
+          # POST
+          desc 'creates a new band', {
+              entity: Songbook::Entities::Band,
+              notes: <<-NOTE
+                ### Description
+                It creates a new band record and returns its current representation.
+
+                ### Example successful response
+
+                    {
+                      "id": "137a66834fb7802c280000ef",
+                      
+
+                    }
+
+              NOTE
+            }
+          params do
+            use :auth
+            optional :session, type: Hash do
+              requires :user_id, type: String, desc: 'User id of user that create the session', documentation: { example: 'Rock' }
+            end
+          end
+          post '/', http_codes: [
+            [200, "Successful"],
+            [400, "Invalid parameter in entry"],
+            [401, "Unauthorized"],
+            [404, "Entry not found"],
+          ]  do
+            content_type "text/json"
+            session = ::EmoSession.new(params[:session])
+            if session.save
+              present session, with: Songbook::Entities::Session
+            else
+              error!(entry.errors, 400)
+            end
+          end
+
+
         end
       end
     end

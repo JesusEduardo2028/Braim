@@ -29,7 +29,8 @@ module Songbook
           access_grant = AccessGrant.find_or_create_by(:user => user)
           {
             access_token: access_grant.access_token,
-            expires_in: access_grant.access_token_expires_at
+            expires_in: access_grant.access_token_expires_at,
+            user_logged: user.username
           }
         end
       end

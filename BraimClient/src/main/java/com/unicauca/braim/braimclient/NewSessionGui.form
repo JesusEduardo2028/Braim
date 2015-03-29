@@ -43,7 +43,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jButton1" alignment="1" max="32767" attributes="0"/>
                           <Component id="et_password" alignment="1" max="32767" attributes="0"/>
-                          <Component id="et_username" alignment="1" max="32767" attributes="0"/>
+                          <Component id="et_userdata" alignment="1" max="32767" attributes="0"/>
                           <Component id="bt_sign_in" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -67,7 +67,7 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="lbl_username" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-              <Component id="et_username" min="-2" max="-2" attributes="0"/>
+              <Component id="et_userdata" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="lbl_password" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
@@ -98,10 +98,13 @@
         <Property name="text" type="java.lang.String" value="BraiM"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="et_username">
+    <Component class="javax.swing.JTextField" name="et_userdata">
       <Properties>
         <Property name="toolTipText" type="java.lang.String" value="Username"/>
       </Properties>
+      <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="et_userdataKeyPressed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="bt_sign_in">
       <Properties>
@@ -115,13 +118,16 @@
       <Properties>
         <Property name="toolTipText" type="java.lang.String" value="Password"/>
       </Properties>
+      <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="et_passwordKeyPressed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lbl_username">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Ubuntu" size="15" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Email:"/>
+        <Property name="text" type="java.lang.String" value="Username or Email:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lbl_password">

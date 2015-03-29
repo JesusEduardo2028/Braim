@@ -11,6 +11,7 @@ import com.unicauca.braim.emotiv.EmoState;
 import com.unicauca.braim.http.HttpBraimClient;
 import com.unicauca.braim.media.MusicPlayer;
 import com.unicauca.braim.media.Song;
+import com.unicauca.braim.media.Token;
 import com.unicauca.braim.media.User;
 import com.unicauca.braim.media.Util;
 import java.awt.Color;
@@ -51,10 +52,12 @@ public class BraimGui extends javax.swing.JFrame {
     private final User currentUser;
     private Song actualSong;
     private Song[] actualSongList;
+    private Token token;
     
-    public BraimGui(User user) {
+    public BraimGui(User user, Token token) {
         this.currentUser = user;
-        this.client = new HttpBraimClient(user.getAuth_token());
+        this.token = token;
+        this.client = new HttpBraimClient();
         initComponents();
         //Create the player after initialize the gui otherwise it fails
         this.player = new MusicPlayer(lbl_progress);
@@ -131,7 +134,7 @@ public class BraimGui extends javax.swing.JFrame {
             int status = client.getConnectionStatus();
             if(status == HttpStatus.SC_OK){
                 socket.connect();
-                socket.emit("join", currentUser.getUsername());
+                socket.emit("join", currentUser.getEmail());
             }else{
                 throw new IOException();
             }
@@ -154,7 +157,7 @@ public class BraimGui extends javax.swing.JFrame {
     
     private void getTrainingSongList(int page) throws IOException{
         
-        actualSongList = client.getTrainingSongList(page);
+        actualSongList = client.GET_Songs(page,token.getAccess_token());
         
         list_songs.setModel(new javax.swing.AbstractListModel() {
             @Override

@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.sun.org.apache.bcel.internal.Constants;
 import com.unicauca.braim.media.Song;
 import com.unicauca.braim.media.Token;
+import com.unicauca.braim.media.User;
 import com.unicauca.braim.media.Util;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -28,78 +29,92 @@ import org.json.simple.JSONValue;
  * @author jesus
  */
 public class HttpBraimClient {
-    private static final String api_url = Util.server_url+Util.api_port;
-    private static final String socket_url = Util.server_url+Util.socket_port;
-    private final HttpClient client;
-    private final Token auth_token;
 
-    public HttpBraimClient(Token auth_token) {
+    private static final String api_url = Util.server_url + Util.api_port;
+    private static final String socket_url = Util.server_url + Util.socket_port;
+    private final HttpClient client;
+
+    public HttpBraimClient() {
         this.client = new HttpClient();
-        this.auth_token = auth_token;
     }
-    
-    public int getConnectionStatus() throws IOException{
+
+    public int getConnectionStatus() throws IOException {
         GetMethod method = new GetMethod(socket_url);
         int statusCode = client.executeMethod(method);
-        return(statusCode);
-    }
-    
-    
-    public String getSongUrl(String song_name) {
-        GetMethod method = new GetMethod(api_url+"/song_url?name="+song_name.replace(" ", "%20"));
-        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
-                new DefaultHttpMethodRetryHandler(3,false));
-        String song_url = "";
-        try {
-            int statusCode = client.executeMethod(method);
-            if (statusCode != HttpStatus.SC_OK) {
-                System.err.println("Method failed: " + method.getStatusLine());
-            }
-            byte[] responseBody = method.getResponseBody();
-            //System.out.println(new String(responseBody));
-            JSONObject response = (JSONObject) JSONValue.parse(new String(responseBody));
-            JSONObject file = (JSONObject) response.get("file");
-            song_url = file.get("url").toString();
-           
-        } catch (HttpException e) {
-          System.err.println("Fatal protocol violation: " + e.getMessage());
-          e.printStackTrace();
-        } catch (IOException e) {
-          System.err.println("Fatal transport error: " + e.getMessage());
-          e.printStackTrace();
-        } finally {
-          method.releaseConnection();
-        }
-        
-        return song_url;
+        return (statusCode);
     }
 
-    public Song[] getTrainingSongList(int page) throws IOException {
-        String token = "songbook_token="+auth_token.getAccess_token();
-        String data = "page="+page+"&per_page=10";
-        GetMethod method = new GetMethod(api_url+"/api/v1/songs?"+token+"&"+data);
-        
-        Song[] songList = null ;
-            Gson gson = new Gson();
-            
+    public Token GET_Token(String email_or_username, String password) throws IOException, Exception {
+        Token token = null;
+        Gson gson = new Gson();
+
+        String data = "data=" + email_or_username + "&password=" + password;
+        GetMethod method = new GetMethod(api_url + "/api/v1/token?" + data);
+        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                new DefaultHttpMethodRetryHandler(3, false));
+
+        int statusCode = client.executeMethod(method);
+        if (statusCode != HttpStatus.SC_OK) {
+            System.err.println("Method failed: " + method.getStatusLine());
+            throw new Exception("The username or password are invalid");
+        }
+
+        byte[] responseBody = method.getResponseBody();
+        String response = new String(responseBody, "UTF-8");
+        token = gson.fromJson(response, Token.class);
+        System.out.println("algo");
+
+        return token;
+    }
+
+    public Song[] GET_Songs(int page, String access_token) throws IOException {
+        String token = "braim_token=" + access_token;
+        String data = "page=" + page + "&per_page=10";
+        GetMethod method = new GetMethod(api_url + "/api/v1/songs?" + token + "&" + data);
+
+        Song[] songList = null;
+        Gson gson = new Gson();
+
         try {
             method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                    new DefaultHttpMethodRetryHandler(3,false));
-            
+                    new DefaultHttpMethodRetryHandler(3, false));
+
             int statusCode = client.executeMethod(method);
             if (statusCode != HttpStatus.SC_OK) {
                 System.err.println("Method failed: " + method.getStatusLine());
             }
-            
+
             byte[] responseBody = method.getResponseBody();
-            String  response = new String(responseBody, "UTF-8");
-            songList = gson.fromJson(response,Song[].class);
-            
-            } catch (UnsupportedEncodingException ex) {
+            String response = new String(responseBody, "UTF-8");
+            songList = gson.fromJson(response, Song[].class);
+
+        } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(HttpBraimClient.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        }
         return songList;
     }
-    
-    
+
+    public User GET_User(String username, String access_token) throws IOException, Exception {
+        User user = null;
+        Gson gson = new Gson();
+
+        String token_data = "?braim_token=" + access_token;
+
+        GetMethod method = new GetMethod(api_url + "/api/v1/users/" + username + token_data);
+        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                new DefaultHttpMethodRetryHandler(3, false));
+
+        int statusCode = client.executeMethod(method);
+        if (statusCode != HttpStatus.SC_OK) {
+            System.err.println("Method failed: " + method.getStatusLine());
+            throw new Exception("The username or password are invalid");
+        }
+
+        byte[] responseBody = method.getResponseBody();
+        String response = new String(responseBody, "UTF-8");
+        user = gson.fromJson(response, User.class);
+        System.out.println(user.getEmail() + "Has been retrieved");
+
+        return user;
+    }
 }

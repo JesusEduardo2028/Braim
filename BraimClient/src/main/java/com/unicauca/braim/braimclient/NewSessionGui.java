@@ -5,10 +5,13 @@
  */
 package com.unicauca.braim.braimclient;
 
-import com.unicauca.braim.http.HttpAuthClient;
+import com.unicauca.braim.http.HttpBraimClient;
 import com.unicauca.braim.media.Token;
 import com.unicauca.braim.media.User;
+import com.unicauca.braim.media.Util;
+import java.awt.Desktop;
 import java.io.IOException;
+import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -20,14 +23,14 @@ import javax.swing.UnsupportedLookAndFeelException;
  * @author jesus
  */
 public class NewSessionGui extends javax.swing.JFrame {
-    private final HttpAuthClient client;
+    private final HttpBraimClient client;
 
     /**
      * Creates new form NewSessionGui
      */
     public NewSessionGui() {
         initComponents();
-        client = new HttpAuthClient();
+        client = new HttpBraimClient();
         setLocationRelativeTo(null);
     }
 
@@ -41,7 +44,7 @@ public class NewSessionGui extends javax.swing.JFrame {
     private void initComponents() {
 
         lbl_braim_brand = new javax.swing.JLabel();
-        et_username = new javax.swing.JTextField();
+        et_userdata = new javax.swing.JTextField();
         bt_sign_in = new javax.swing.JButton();
         et_password = new javax.swing.JPasswordField();
         lbl_username = new javax.swing.JLabel();
@@ -56,7 +59,12 @@ public class NewSessionGui extends javax.swing.JFrame {
         lbl_braim_brand.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/unicauca/braim/images/1414623820_Brain-Games.png"))); // NOI18N
         lbl_braim_brand.setText("BraiM");
 
-        et_username.setToolTipText("Username");
+        et_userdata.setToolTipText("Username");
+        et_userdata.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                et_userdataKeyPressed(evt);
+            }
+        });
 
         bt_sign_in.setText("Sign in");
         bt_sign_in.addActionListener(new java.awt.event.ActionListener() {
@@ -66,9 +74,14 @@ public class NewSessionGui extends javax.swing.JFrame {
         });
 
         et_password.setToolTipText("Password");
+        et_password.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                et_passwordKeyPressed(evt);
+            }
+        });
 
         lbl_username.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-        lbl_username.setText("Email:");
+        lbl_username.setText("Username or Email:");
 
         lbl_password.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         lbl_password.setText("Password:");
@@ -102,7 +115,7 @@ public class NewSessionGui extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(et_password, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(et_username, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(et_userdata, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(bt_sign_in, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -119,7 +132,7 @@ public class NewSessionGui extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(lbl_username)
                 .addGap(5, 5, 5)
-                .addComponent(et_username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(et_userdata, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbl_password)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -138,18 +151,19 @@ public class NewSessionGui extends javax.swing.JFrame {
 
     private void bt_sign_inActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_sign_inActionPerformed
         // TODO add your handling code here:
-        String username = et_username.getText();
+        String userdata = et_userdata.getText();
         String password = new String(et_password.getPassword());
         
         try {
-            Token token = client.authenticate(username, password);
+            final Token token = client.GET_Token(userdata, password);
             if (token.getAccess_token() !=null){
-                final User newUser = new User(username, password, token);
+                // If the authentication was succesfull get the current user
+                final User newUser = client.GET_User(token.getUser_logged(),token.getAccess_token());
                 setVisible(false);
                 java.awt.EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new BraimGui(newUser).setVisible(true);
+                        new BraimGui(newUser,token).setVisible(true);
                     }
                 });
                 
@@ -165,9 +179,29 @@ public class NewSessionGui extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        client.launch_sign_up();
-
+        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+            try {
+                desktop.browse(new URI(Util.server_url+Util.api_port+"/users/sign_up"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        
+        }
+    
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void et_userdataKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_et_userdataKeyPressed
+        // TODO add your handling code here:
+    
+    }//GEN-LAST:event_et_userdataKeyPressed
+
+    private void et_passwordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_et_passwordKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER){
+            bt_sign_in.doClick();
+        }
+    }//GEN-LAST:event_et_passwordKeyPressed
 
     /**
      * @param args the command line arguments
@@ -197,7 +231,7 @@ public class NewSessionGui extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bt_sign_in;
     private javax.swing.JPasswordField et_password;
-    private javax.swing.JTextField et_username;
+    private javax.swing.JTextField et_userdata;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lbl_braim_brand;

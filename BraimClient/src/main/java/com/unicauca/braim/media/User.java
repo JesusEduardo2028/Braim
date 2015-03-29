@@ -10,17 +10,25 @@ package com.unicauca.braim.media;
  * @author jesus
  */
 public class User {
-
-    private String username;
-    private String password;
-    private Token auth_token;
-
-    public User(String username, String password, Token auth_token) {
-        this.username = username;
-        this.password = password;
-        this.auth_token = auth_token;
-    }
     
+    private String id;
+    private String username;
+    private String email;
+    
+    public User(String id, String username, String email) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -29,20 +37,12 @@ public class User {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getEmail() {
+        return email;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Token getAuth_token() {
-        return auth_token;
-    }
-
-    public void setAuth_token(Token auth_token) {
-        this.auth_token = auth_token;
+    public void setEmail(String email) {
+        this.email = email;
     }
     
     

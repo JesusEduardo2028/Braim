@@ -64,3 +64,7 @@ public/uploads
 
 ## UNIX TEMP FILES
 *~
+
+
+##config files
+song_database.rake

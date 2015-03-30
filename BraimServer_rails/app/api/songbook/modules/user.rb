@@ -89,14 +89,21 @@ module Songbook
             NOTES
           }
           params do
-            #use :auth
+            use :auth
             use :username
+            use :pagination
           end
           get '/:username/sessions', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
             content_type "text/json"
-            user = ::User.find_by(params[:username])
 
-            present user.emo_sessions, with:  Songbook::Entities::Session
+            user = ::User.find_by(username: params[:username])
+
+            page = params[:page] || 1
+            per_page = params[:per_page] || 10
+            WillPaginate.per_page = per_page
+            sessions =  user.emo_sessions.page(page)
+
+            present sessions, with:  Songbook::Entities::Session
           end
           desc 'returns all emotional entries from a given user', {
             entity: Songbook::Entities::Session,
@@ -116,17 +123,17 @@ module Songbook
             NOTES
           }
           params do
-            #use :auth
+            use :auth
             use :pagination
-            use :id
+            use :username
           end
-          get '/:id/all_emo_entries', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
+          get '/:username/all_emo_entries', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
             content_type "text/json"
-            user = ::User.find(params[:id])
+            user = ::User.find_by(username: params[:username])
             page = params[:page] || 1
             per_page = params[:per_page] || 10
             WillPaginate.per_page = per_page
-            entries = user.all_emo_entries
+            entries = user.all_emo_entries.page(page)
             present entries, with:  Songbook::Entities::EmoEntry
           end
           desc 'returns all player entries from a given user', {
@@ -147,17 +154,17 @@ module Songbook
             NOTES
           }
           params do
-            #use :auth
+            use :auth
             use :pagination
-            use :id
+            use :username
           end
-          get '/:id/all_player_entries', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
+          get '/:username/all_player_entries', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
             content_type "text/json"
-            user = ::User.find(params[:id])
+            user = ::User.find_by(username: params[:username])
             page = params[:page] || 1
             per_page = params[:per_page] || 10
             WillPaginate.per_page = per_page
-            entries = user.all_player_entries
+            entries = user.all_player_entries.page(page)
             present entries , with:  Songbook::Entities::PlayerEntry
           end
         end

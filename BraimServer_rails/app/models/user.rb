@@ -61,11 +61,11 @@ class User
   end
 
   def all_emo_entries
-    return EmoEntry.where(user_id: /#{id.to_s}/)
+    return EmoEntry.where(user_id: id)
   end
 
   def all_player_entries
-    return PlayerEntry.where(user_id: /#{id.to_s}/)
+    return PlayerEntry.where(user_id: id)
   end
 
   def self.find_first_by_auth_conditions(warden_conditions)

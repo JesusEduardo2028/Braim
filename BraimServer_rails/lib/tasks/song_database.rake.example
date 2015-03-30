@@ -1,0 +1,13 @@
+namespace :db  do
+  desc "Fill database with sample data uploading songs from server songs directory"
+
+  task songs: :environment do
+    Dir.glob('/home/deploy/songs/*').each do|file|
+        name = file.split('/').last
+        song =Song.create!(name: name)
+        song.file.store!(File.open(File.join(file)))
+        song.save!
+    end
+    puts "#{Song.all.count} uploaded songs in the database !"
+  end
+end

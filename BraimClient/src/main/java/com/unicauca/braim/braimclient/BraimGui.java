@@ -194,7 +194,7 @@ public class BraimGui extends javax.swing.JFrame {
         json_values.put("song_id", actualSong.getId());
         json_values.put("action", play);
         json_values.put("timestamp",lDateTime);
-        socket.emit("add_player_info", json_values);
+        socket.emit("store_player_info", json_values);
 
     }
     
@@ -960,7 +960,7 @@ public class BraimGui extends javax.swing.JFrame {
             json_values.put("engagement", emoValues.affectivEnagement);
             json_values.put("nodes", emoValues.eegNodes);
             json_values.put("timestamp",lDateTime);
-            socket.emit("add_emo_info", json_values);
+            socket.emit("store_emo_info", json_values);
         }
 
         @Override

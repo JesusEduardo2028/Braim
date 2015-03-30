@@ -17,7 +17,9 @@ public class Song {
     private String url;
     private String author;
     private String duration;
-    private static final String main_url = Util.server_url;
+    //private static final String main_url = Util.server_url;
+
+    private static final String main_url = Util.server_url + Util.api_port;
 
     public Song() {
     }

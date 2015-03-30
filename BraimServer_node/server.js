@@ -40,7 +40,7 @@ io.on('connection', function(client){
 
 	client.on('store_emo_info',function(emo_values){
 		if(emo_values!=null){
-			emo_values["session_id"] = client.session_id
+			emo_values["emo_session_id"] = client.session_id
 			emo_values["user_id"] = client.user_id
 			db.emo_entries.save(emo_values, function(){
 				//console.log('entry saved');
@@ -50,9 +50,9 @@ io.on('connection', function(client){
 
 	client.on('store_player_info',function(player_values){
 		if(player_values!=null){
-			player_values["session_id"] = client.session_id
+			player_values["emo_session_id"] = client.session_id
 			player_values["user_id"] = client.user_id
-			db.player_entries.save(data, function(){
+			db.player_entries.save(player_values, function(){
 				//console.log('entry saved');
 			});
 		}

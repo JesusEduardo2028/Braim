@@ -37,6 +37,7 @@ public class MusicPlayer implements BasicPlayerListener {
     }
     
     public void OpenFile(String route) throws Exception {
+        String full_route = route;
         audioController.open(new URL(route.replace(" ","%20")));
         //player.open(din);
     }

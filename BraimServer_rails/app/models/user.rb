@@ -2,6 +2,7 @@ class User
   include Mongoid::Document
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
+  attr_accessor :login
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
@@ -60,18 +61,19 @@ class User
   end
 
   def all_emo_entries
-    entries = []
-    emo_sessions.each do|session|
-      entries = entries.concat session.emo_entries
-    end
-    return entries
+    return EmoEntry.where(user_id: /#{id.to_s}/)
   end
 
   def all_player_entries
-    entries = []
-    emo_sessions.each do|session|
-      entries = entries.concat session.player_entries
+    return PlayerEntry.where(user_id: /#{id.to_s}/)
+  end
+
+  def self.find_first_by_auth_conditions(warden_conditions)
+    conditions = warden_conditions.dup
+    if login = conditions.delete(:login)
+      self.any_of({ :username =>  /^#{Regexp.escape(login)}$/i }, { :email =>  /^#{Regexp.escape(login)}$/i }).first
+    else
+      super
     end
-    return entries
   end
 end

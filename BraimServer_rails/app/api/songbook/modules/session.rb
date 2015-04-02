@@ -81,11 +81,16 @@ module Songbook
           params do
             use :auth
             use :id
+            use :pagination
           end
           get '/:id/emo_entries', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
             content_type "text/json"
+            page = params[:page] || 1
+            per_page = params[:per_page] || 10
+            WillPaginate.per_page = per_page
             session = ::EmoSession.find(params[:id])
-            present session.emo_entries, with:  Songbook::Entities::EmoEntry
+            emo_entries = session.emo_entries.page(page)
+            present emo_entries, with:  Songbook::Entities::EmoEntry
           end
           desc 'returns all player entries from a given session', {
             entity: Songbook::Entities::Session,
@@ -106,15 +111,20 @@ module Songbook
           params do
             use :auth
             use :id
+            use :pagination
           end
           get '/:id/player_entries', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
             content_type "text/json"
+            page = params[:page] || 1
+            per_page = params[:per_page] || 10
+            WillPaginate.per_page = per_page
             session = ::EmoSession.find(params[:id])
-            present session.player_entries, with:  Songbook::Entities::PlayerEntry
+            player_entries = session.player_entries.page(page)
+            present player_entries, with:  Songbook::Entities::PlayerEntry
           end
 
           # POST
-          desc 'creates a new band', {
+          desc 'creates a new session', {
               entity: Songbook::Entities::Band,
               notes: <<-NOTE
                 ### Description

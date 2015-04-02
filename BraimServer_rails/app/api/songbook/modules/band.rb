@@ -1,4 +1,3 @@
-=begin
 module Songbook
   module Modules
     class Band < Grape::API

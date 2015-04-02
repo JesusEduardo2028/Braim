@@ -43,6 +43,40 @@ describe 'Session', :type => :request do
 
         end
 
+        context "/:id/emo_entries" do
+          it 'gets all paginated emo entries for a session' do
+
+            session = EmoSession.first
+            FactoryGirl.create_list(:emo_entry, 10 , user_id: @user.id.to_s, emo_session: session);
+            
+            token = "braim_token=#{@credentials['access_token']}"
+            per_page = 5
+            data = "per_page=#{per_page}"
+
+            get "/api/v1/sessions/#{session.id.to_s}/emo_entries", "#{token}&#{data}"
+
+            expect(response.status).to eq 200
+            expect(JSON.parse(response.body).count).to be per_page
+          end
+        end
+
+        context "/:id/player_entries" do
+          it 'gets all paginated player entries for a session' do
+
+            session = EmoSession.first
+            FactoryGirl.create_list(:player_entry, 10 , user_id: @user.id.to_s, emo_session: session);
+            
+            token = "braim_token=#{@credentials['access_token']}"
+            per_page = 5
+            data = "per_page=#{per_page}"
+
+            get "/api/v1/sessions/#{session.id.to_s}/player_entries", "#{token}&#{data}"
+
+            expect(response.status).to eq 200
+            expect(JSON.parse(response.body).count).to be per_page
+          end
+        end
+
       end
 
       context 'POST' do

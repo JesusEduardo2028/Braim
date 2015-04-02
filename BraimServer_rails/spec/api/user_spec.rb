@@ -11,8 +11,8 @@ describe 'Band', :type => :request do
           FactoryGirl.create_list(:emo_session, 10 , user: user);
         end
         @user.emo_sessions.each do|session|
-          FactoryGirl.create_list(:emo_entry, 10 , user_id: @user.id.to_s, emo_session: session);
-          FactoryGirl.create_list(:player_entry, 10 , user_id: @user.id.to_s, emo_session: session);
+          FactoryGirl.create_list(:emo_entry, 10 , user_id: @user.id, emo_session: session);
+          FactoryGirl.create_list(:player_entry, 10 , user_id: @user.id, emo_session: session);
         end
         get '/api/v1/token', %Q{data=allam.britto@fake.com&password=12345678}
         @credentials = JSON.parse response.body

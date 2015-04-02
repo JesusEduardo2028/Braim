@@ -1,10 +1,16 @@
 class User
   include Mongoid::Document
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   attr_accessor :login
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
+
+  
+
+#----------------------- MODEL ATTRIBUTES -------------------------#
+
 
   ## Database authenticatable
   field :email,              type: String, default: ""
@@ -38,9 +44,18 @@ class User
   # field :unlock_token,    type: String # Only if unlock strategy is :email or :both
   # field :locked_at,       type: Time
 
+
+#----------------------- VALIDATIONS -------------------------#
+
   # validates user credentials
   # @return User
   validates :username, format: { with: /\A[a-zA-Z0-9]+\Z/ }, uniqueness: true
+
+
+
+#----------------------- CLASS METHODS -------------------------#
+
+
   def self.authenticate(data, password)
     begin
       return User.find_by(username: data) if User.find_by(username: data).try(:valid_password?, password)
@@ -60,14 +75,6 @@ class User
     Devise.secure_compare(record.rememberable_value, remember_token)
   end
 
-  def all_emo_entries
-    return EmoEntry.where(user_id: id)
-  end
-
-  def all_player_entries
-    return PlayerEntry.where(user_id: id)
-  end
-
   def self.find_first_by_auth_conditions(warden_conditions)
     conditions = warden_conditions.dup
     if login = conditions.delete(:login)
@@ -75,5 +82,40 @@ class User
     else
       super
     end
+  end
+
+#----------------------- INSTANCE MEHOTDS -------------------------#
+
+  def all_emo_entries
+    entries = EmoEntry.where(user_id: self.id)
+  end
+
+  def all_player_entries
+    entries = PlayerEntry.where(user_id: self.id)
+  end
+  
+  def all_audio_fragments
+    fragments = []
+    all_player_entries.each_with_index do|entry,i|
+      if entry.action == :play
+        new_fragment = {song_id: entry.song_id, start_at: entry.timestamp, end_at: all_player_entries[i+1].timestamp }
+        fragments<<new_fragment
+      end
+    end
+    return fragments
+  end  
+
+  def all_song_fragments(song_id) 
+    song_fragments = []
+    all_audio_fragments.each do |fragment|
+      if(fragment[:song_id] == song_id) 
+        song_fragments<<fragment
+      end
+    end
+    return song_fragments
+  end
+
+  def emo_entries_by_date(start_at,end_at)
+    entries = EmoEntry.where(user_id: /#{self.id.to_s}/, :timestamp => {'$gte' => start_at,'$lt' => end_at})
   end
 end

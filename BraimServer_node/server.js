@@ -3,35 +3,17 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var mongojs = require('mongojs');
+var ObjectId = mongojs.ObjectId
 var db = mongojs('songbook_development',['emo_entries','users', 'emo_sessions', 'player_entries']);
-
-var storeEmoData = function(data,session_date){
-	//Add the message in the array
-	db.emo_sessions.find({start_at: session_date},function(err,docs){
-		session = docs[0];
-		data["emo_session_id"] = session["_id"]
-		
-	});
-	
-}
-
-var storePlayerData = function(data,session_date){
-	//Add the message in the array
-	db.emo_sessions.find({start_at: session_date},function(err,docs){
-		session = docs[0];
-		data["emo_session_id"] = session["_id"]
-		
-	});
-	
-}
 
 
 io.on('connection', function(client){
 	//console.log('Client connected..');
 	client.on('register_session',function(session){
 		session_json = JSON.parse(session)
-		client.session_id = session_json["id"]
-		client.user_id = session_json["user_id"]
+		client.session_id = ObjectId(session_json["id"])
+		client.user_id = ObjectId(session_json["user_id"])
+		client.emit('init_capture')
 		console.log("NEW sesion:"+client.session_id+"user:"+client.user_id)
 	});
 

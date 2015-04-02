@@ -1,13 +1,16 @@
 class EmoSession
   include Mongoid::Document
+  before_create :set_time
 
   has_many :emo_entries
   has_many :player_entries
   belongs_to :user
 
+#------------------ MODEL ATTRIBUTES ---------------------#
+
   field :start_at , type: Float
 
-  before_create :set_time
+#------------------ INSTANCE METHODS ---------------------#
 
   def date
     Time.at(start_at/1000).to_formatted_s(:long)
@@ -18,4 +21,5 @@ class EmoSession
   def set_time
     self.start_at = Time.now
   end
+
 end

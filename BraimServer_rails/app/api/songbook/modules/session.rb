@@ -153,7 +153,9 @@ module Songbook
             [404, "Entry not found"],
           ]  do
             content_type "text/json"
-            session = ::EmoSession.new(params[:session])
+            session_params = params[:session]
+            user = ::User.find(session_params['user_id'])
+            session = user.emo_sessions.build
             if session.save
               present session, with: Songbook::Entities::Session
             else

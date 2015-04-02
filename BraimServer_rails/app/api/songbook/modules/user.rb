@@ -134,6 +134,7 @@ module Songbook
             per_page = params[:per_page] || 10
             WillPaginate.per_page = per_page
             entries = user.all_emo_entries.page(page)
+            binding.pry
             present entries, with:  Songbook::Entities::EmoEntry
           end
           desc 'returns all player entries from a given user', {

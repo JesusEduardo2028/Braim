@@ -119,11 +119,10 @@ public class BraimGui extends javax.swing.JFrame {
                 //emotivTask = null;
             }
         });
-        socket.on("user added", new Emitter.Listener() {
+        socket.on("init_capture", new Emitter.Listener() {
 
             @Override
             public void call(Object... os) {
-                lbl_username.setText(os[0].toString());
                 menu_item_emo_device.setEnabled(false);
                 (emotivTask = new EmotivEngineTask()).execute();
             }

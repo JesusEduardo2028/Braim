@@ -3,8 +3,8 @@ class PlayerEntry
   belongs_to :emo_session
 
   field :user_id, type: BSON::ObjectId
-  field :timestamp, type: Float
   field :song_id, type: BSON::ObjectId
+  field :timestamp, type: Float
   field :action , type: Symbol
 
   def player_state

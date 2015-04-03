@@ -86,6 +86,7 @@ public class HttpBraimClient {
             }
 
             byte[] responseBody = method.getResponseBody();
+            System.out.println("TOTAL SONG PAGES= "+method.getResponseHeader("total_pages"));
             String response = new String(responseBody, "UTF-8");
             songList = gson.fromJson(response, Song[].class);
 

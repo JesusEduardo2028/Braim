@@ -49,6 +49,7 @@ module Songbook
             per_page = params[:per_page] || 10
             WillPaginate.per_page = per_page
             users = ::User.page(page)
+            header 'total_pages', users.total_pages.to_s
             present users, with: Songbook::Entities::User
           end
           desc 'returns a user by username', {
@@ -102,7 +103,7 @@ module Songbook
             per_page = params[:per_page] || 10
             WillPaginate.per_page = per_page
             sessions =  user.emo_sessions.page(page)
-
+            header 'total_pages', sessions.total_pages.to_s
             present sessions, with:  Songbook::Entities::Session
           end
           desc 'returns all emotional entries from a given user', {
@@ -134,6 +135,7 @@ module Songbook
             per_page = params[:per_page] || 10
             WillPaginate.per_page = per_page
             entries = user.all_emo_entries.page(page)
+            header 'total_pages', entries.total_pages.to_s
             present entries, with:  Songbook::Entities::EmoEntry
           end
           desc 'returns all player entries from a given user', {
@@ -165,6 +167,7 @@ module Songbook
             per_page = params[:per_page] || 10
             WillPaginate.per_page = per_page
             entries = user.all_player_entries.page(page)
+            header 'total_pages', entries.total_pages.to_s
             present entries , with:  Songbook::Entities::PlayerEntry
           end
         end

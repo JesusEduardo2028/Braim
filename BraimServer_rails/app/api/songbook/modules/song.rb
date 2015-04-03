@@ -60,6 +60,7 @@ module Songbook
             per_page = params[:per_page] || 10
             WillPaginate.per_page = per_page
             songs = ::Song.page(page)
+            header 'total_pages', songs.total_pages.to_s
             present songs
           end
         end

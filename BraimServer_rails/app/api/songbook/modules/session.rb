@@ -45,6 +45,7 @@ module Songbook
             per_page = params[:per_page] || 10
             WillPaginate.per_page = per_page
             sessions = ::EmoSession.page(page)
+            header 'total_pages', sessions.total_pages.to_s
             present sessions, with: Songbook::Entities::Session
           end
           desc 'returns one existent session by :id', {
@@ -90,6 +91,7 @@ module Songbook
             WillPaginate.per_page = per_page
             session = ::EmoSession.find(params[:id])
             emo_entries = session.emo_entries.page(page)
+            header 'total_pages', emo_entries.total_pages.to_s
             present emo_entries, with:  Songbook::Entities::EmoEntry
           end
           desc 'returns all player entries from a given session', {
@@ -120,6 +122,7 @@ module Songbook
             WillPaginate.per_page = per_page
             session = ::EmoSession.find(params[:id])
             player_entries = session.player_entries.page(page)
+            header 'total_pages', player_entries.total_pages.to_s
             present player_entries, with:  Songbook::Entities::PlayerEntry
           end
 

@@ -55,13 +55,17 @@ public class BraimGui extends javax.swing.JFrame {
     private Song actualSong;
     private Song[] actualSongList;
     private Token token;
+    private int current_page;
     
     public BraimGui(User user, Token token) {
         this.currentUser = user;
         this.token = token;
         this.client = new HttpBraimClient();
+        this.current_page = 1;
         initComponents();
         //Create the player after initialize the gui otherwise it fails
+        this.bt_previous_list.setEnabled(false);
+        this.bt_next_list.setEnabled(false);
         this.player = new MusicPlayer(lbl_progress);
         add_mouse_listener_to_list();
         create_socket();
@@ -133,6 +137,7 @@ public class BraimGui extends javax.swing.JFrame {
             socket.connect();
             String session_json = new Gson().toJson(session);
             socket.emit("register_session", session_json);
+            lbl_session_id.setText(session.getId());
         } catch (IOException ex) {
             Logger.getLogger(BraimGui.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, ex.getMessage());
@@ -152,7 +157,7 @@ public class BraimGui extends javax.swing.JFrame {
     
     private void getTrainingSongList(int page) throws IOException{
         
-        actualSongList = client.GET_Songs(page,token.getAccess_token());
+        actualSongList = client.GET_Songs(page,token.getAccess_token(),bt_next_list,bt_previous_list);
         
         list_songs.setModel(new javax.swing.AbstractListModel() {
             @Override
@@ -213,6 +218,8 @@ public class BraimGui extends javax.swing.JFrame {
         lbl_st = new javax.swing.JLabel();
         lbl_status = new javax.swing.JLabel();
         lbl_username = new javax.swing.JLabel();
+        lbl_session = new javax.swing.JLabel();
+        lbl_session_id = new javax.swing.JLabel();
         tab_panel = new javax.swing.JTabbedPane();
         tab_panel_data = new javax.swing.JPanel();
         lbl_node1 = new javax.swing.JLabel();
@@ -264,8 +271,10 @@ public class BraimGui extends javax.swing.JFrame {
         lbl_songs_list = new javax.swing.JLabel();
         lbl_progress = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        btn_refresh = new javax.swing.JButton();
+        btn_refresh_songs = new javax.swing.JButton();
         btn_stop = new javax.swing.JButton();
+        bt_previous_list = new javax.swing.JButton();
+        bt_next_list = new javax.swing.JButton();
         tab_panel_recommendation = new javax.swing.JPanel();
         menu_braim = new javax.swing.JMenuBar();
         menu_application = new javax.swing.JMenu();
@@ -299,6 +308,12 @@ public class BraimGui extends javax.swing.JFrame {
         lbl_username.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         lbl_username.setText("No user connected");
 
+        lbl_session.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        lbl_session.setForeground(new java.awt.Color(0, 162, 255));
+        lbl_session.setText("SessionID:");
+
+        lbl_session_id.setText("No session started");
+
         javax.swing.GroupLayout pnl_user_settingsLayout = new javax.swing.GroupLayout(pnl_user_settings);
         pnl_user_settings.setLayout(pnl_user_settingsLayout);
         pnl_user_settingsLayout.setHorizontalGroup(
@@ -306,28 +321,38 @@ public class BraimGui extends javax.swing.JFrame {
             .addGroup(pnl_user_settingsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnl_user_settingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbl_username, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(pnl_user_settingsLayout.createSequentialGroup()
+                        .addComponent(lbl_user)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lbl_username, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(pnl_user_settingsLayout.createSequentialGroup()
                         .addGroup(pnl_user_settingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbl_user)
                             .addGroup(pnl_user_settingsLayout.createSequentialGroup()
                                 .addComponent(lbl_st)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lbl_status)))
+                                .addComponent(lbl_status))
+                            .addGroup(pnl_user_settingsLayout.createSequentialGroup()
+                                .addComponent(lbl_session)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lbl_session_id)))
                         .addGap(0, 185, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         pnl_user_settingsLayout.setVerticalGroup(
             pnl_user_settingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_user_settingsLayout.createSequentialGroup()
-                .addContainerGap(17, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pnl_user_settingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_st)
                     .addComponent(lbl_status))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbl_user)
+                .addGroup(pnl_user_settingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_user)
+                    .addComponent(lbl_username))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbl_username)
+                .addGroup(pnl_user_settingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_session)
+                    .addComponent(lbl_session_id))
                 .addGap(24, 24, 24))
         );
 
@@ -540,7 +565,7 @@ public class BraimGui extends javax.swing.JFrame {
                             .addComponent(lbl_node7)
                             .addComponent(txt_node_7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lbl_node14))))
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         tab_panel_dataLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {txt_node_1, txt_node_2, txt_node_3, txt_node_4, txt_node_5, txt_node_6, txt_node_7});
@@ -614,10 +639,10 @@ public class BraimGui extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         jLabel1.setText("Position:");
 
-        btn_refresh.setText("Get Training List");
-        btn_refresh.addActionListener(new java.awt.event.ActionListener() {
+        btn_refresh_songs.setText("Get Songs");
+        btn_refresh_songs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_refreshActionPerformed(evt);
+                btn_refresh_songsActionPerformed(evt);
             }
         });
 
@@ -626,6 +651,22 @@ public class BraimGui extends javax.swing.JFrame {
         btn_stop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_stopActionPerformed(evt);
+            }
+        });
+
+        bt_previous_list.setFont(new java.awt.Font("TlwgTypewriter", 1, 18)); // NOI18N
+        bt_previous_list.setText("<");
+        bt_previous_list.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_previous_listActionPerformed(evt);
+            }
+        });
+
+        bt_next_list.setFont(new java.awt.Font("TlwgTypewriter", 1, 18)); // NOI18N
+        bt_next_list.setText(">");
+        bt_next_list.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_next_listActionPerformed(evt);
             }
         });
 
@@ -647,10 +688,6 @@ public class BraimGui extends javax.swing.JFrame {
                             .addGroup(tab_panel_trainingLayout.createSequentialGroup()
                                 .addGroup(tab_panel_trainingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(tab_panel_trainingLayout.createSequentialGroup()
-                                        .addComponent(lbl_songs_list)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(btn_refresh))
-                                    .addGroup(tab_panel_trainingLayout.createSequentialGroup()
                                         .addComponent(lbl_actual_song)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(lbl_song_name))
@@ -665,7 +702,16 @@ public class BraimGui extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(btn_next)))
                                 .addGap(0, 120, Short.MAX_VALUE)))
-                        .addContainerGap())))
+                        .addContainerGap())
+                    .addGroup(tab_panel_trainingLayout.createSequentialGroup()
+                        .addComponent(lbl_songs_list)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_refresh_songs, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(bt_previous_list, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bt_next_list, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(92, 92, 92))))
         );
 
         tab_panel_trainingLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_next, btn_pause, btn_play, btn_previous, btn_stop});
@@ -673,11 +719,19 @@ public class BraimGui extends javax.swing.JFrame {
         tab_panel_trainingLayout.setVerticalGroup(
             tab_panel_trainingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(tab_panel_trainingLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(tab_panel_trainingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbl_songs_list)
-                    .addComponent(btn_refresh))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(tab_panel_trainingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(tab_panel_trainingLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(tab_panel_trainingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lbl_songs_list)
+                            .addComponent(btn_refresh_songs))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tab_panel_trainingLayout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(tab_panel_trainingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(bt_previous_list)
+                            .addComponent(bt_next_list))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addComponent(scroll_songs, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(tab_panel_trainingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -697,7 +751,7 @@ public class BraimGui extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        tab_panel.addTab("Training", tab_panel_training);
+        tab_panel.addTab("Songs", tab_panel_training);
 
         tab_panel_recommendation.setBackground(new java.awt.Color(255, 255, 255));
         tab_panel_recommendation.setEnabled(false);
@@ -710,7 +764,7 @@ public class BraimGui extends javax.swing.JFrame {
         );
         tab_panel_recommendationLayout.setVerticalGroup(
             tab_panel_recommendationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 341, Short.MAX_VALUE)
+            .addGap(0, 342, Short.MAX_VALUE)
         );
 
         tab_panel.addTab("Recommendation", tab_panel_recommendation);
@@ -767,10 +821,10 @@ public class BraimGui extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbl_braim_brand, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnl_user_settings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(9, 9, 9)
+                    .addComponent(pnl_user_settings, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(tab_panel)
                 .addContainerGap())
         );
@@ -836,14 +890,14 @@ public class BraimGui extends javax.swing.JFrame {
         
     }//GEN-LAST:event_btn_pauseActionPerformed
 
-    private void btn_refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_refreshActionPerformed
+    private void btn_refresh_songsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_refresh_songsActionPerformed
         try {
             // TODO add your handling code here:
-            getTrainingSongList(1);
+            getTrainingSongList(current_page);
         } catch (IOException ex) {
             Logger.getLogger(BraimGui.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btn_refreshActionPerformed
+    }//GEN-LAST:event_btn_refresh_songsActionPerformed
 
     private void list_songsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_list_songsValueChanged
         // TODO add your handling code here:
@@ -880,6 +934,26 @@ public class BraimGui extends javax.swing.JFrame {
         play_song(actualSong);
     
     }//GEN-LAST:event_btn_nextActionPerformed
+
+    private void bt_previous_listActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_previous_listActionPerformed
+        // TODO add your handling code here:
+        current_page = current_page-1;
+        try {
+            getTrainingSongList(current_page);
+        } catch (IOException ex) {
+            Logger.getLogger(BraimGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_bt_previous_listActionPerformed
+
+    private void bt_next_listActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_next_listActionPerformed
+        // TODO add your handling code here:
+        current_page = current_page+1;
+        try {
+            getTrainingSongList(current_page);
+        } catch (IOException ex) {
+            Logger.getLogger(BraimGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_bt_next_listActionPerformed
 
     
     public class SongTask extends SwingWorker<Void, Song> {
@@ -1052,11 +1126,13 @@ public class BraimGui extends javax.swing.JFrame {
     }
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bt_next_list;
+    private javax.swing.JButton bt_previous_list;
     private javax.swing.JButton btn_next;
     private javax.swing.JButton btn_pause;
     private javax.swing.JButton btn_play;
     private javax.swing.JButton btn_previous;
-    private javax.swing.JButton btn_refresh;
+    private javax.swing.JButton btn_refresh_songs;
     private javax.swing.JButton btn_stop;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JSeparator jSeparator1;
@@ -1082,6 +1158,8 @@ public class BraimGui extends javax.swing.JFrame {
     private javax.swing.JLabel lbl_node9;
     private javax.swing.JLabel lbl_progress;
     private javax.swing.JLabel lbl_raw_emotiv;
+    private javax.swing.JLabel lbl_session;
+    private javax.swing.JLabel lbl_session_id;
     private javax.swing.JLabel lbl_song_name;
     private javax.swing.JLabel lbl_songs_list;
     private javax.swing.JLabel lbl_st;

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.*;
 import org.apache.commons.httpclient.params.HttpMethodParams;
@@ -68,14 +69,19 @@ public class HttpBraimClient {
         return token;
     }
 
-    public Song[] GET_Songs(int page, String access_token) throws IOException {
+    public Song[] GET_Songs(int page, String access_token,JButton bt_next_list, JButton bt_previous_list) throws IOException {
+        if(page==1){
+            bt_previous_list.setEnabled(false);
+        }else{
+            bt_previous_list.setEnabled(true);
+        }
         String token = "braim_token=" + access_token;
         String data = "page=" + page + "&per_page=10";
         GetMethod method = new GetMethod(api_url + "/api/v1/songs?" + token + "&" + data);
 
         Song[] songList = null;
         Gson gson = new Gson();
-
+        
         try {
             method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
                     new DefaultHttpMethodRetryHandler(3, false));
@@ -86,9 +92,15 @@ public class HttpBraimClient {
             }
 
             byte[] responseBody = method.getResponseBody();
-            System.out.println("TOTAL SONG PAGES= "+method.getResponseHeader("total_pages"));
+            Integer total_pages = Integer.parseInt(method.getResponseHeader("total_pages").getValue());
+            System.out.println("TOTAL SONG PAGES= "+ method.getResponseHeader("total_pages"));
             String response = new String(responseBody, "UTF-8");
             songList = gson.fromJson(response, Song[].class);
+            if(page==total_pages){
+                bt_next_list.setEnabled(false);
+            }else{
+                bt_next_list.setEnabled(true);
+            }
 
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(HttpBraimClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -147,5 +159,6 @@ public class HttpBraimClient {
 
         return session;
     }
+
     
 }

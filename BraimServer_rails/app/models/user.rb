@@ -116,6 +116,6 @@ class User
   end
 
   def emo_entries_by_date(start_at,end_at)
-    entries = EmoEntry.where(user_id: /#{self.id.to_s}/, :timestamp => {'$gte' => start_at,'$lt' => end_at})
+    entries = EmoEntry.where(user_id: self.id , :timestamp => {'$gte' => start_at,'$lt' => end_at})
   end
 end

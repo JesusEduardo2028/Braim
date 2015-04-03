@@ -13,7 +13,7 @@ class EmoSession
 #------------------ INSTANCE METHODS ---------------------#
 
   def date
-    Time.at(start_at/1000).to_formatted_s(:long)
+    Time.at(start_at).to_formatted_s(:long)
   end
   
   protected

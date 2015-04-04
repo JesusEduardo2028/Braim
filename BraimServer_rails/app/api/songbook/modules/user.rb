@@ -170,6 +170,42 @@ module Songbook
             header 'total_pages', entries.total_pages.to_s
             present entries , with:  Songbook::Entities::PlayerEntry
           end
+=begin
+          desc 'returns all fragments for a song', {
+            entity: Songbook::Entities::Session,
+            notes: <<-NOTES
+               ### Description
+                CAUTIONNN THIS MAY TAKE TIME!!!!!
+                It returns all player entries from a session
+
+                ### Example successful response
+                    [
+                      {
+                        player entry item
+                      },
+                        player entry item
+                      {
+                    ]
+            NOTES
+          }
+          params do
+            use :auth
+            use :pagination
+            use :username
+            requires :song_id , type: String, desc: 'Song id'
+          end
+          get '/:username/all_song_fragments/:song_id', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
+            content_type "text/json"
+            user = ::User.find_by(username: params[:username])
+            page = params[:page] || 1
+            per_page = params[:per_page] || 10
+            WillPaginate.per_page = per_page
+            entries = user.all_song_fragments(params[:song_id])
+            #binding.pry
+            #header 'total_pages', entries.total_pages.to_s
+            present entries , with:  Songbook::Entities::SongFragment
+          end
+=end
         end
       end
     end

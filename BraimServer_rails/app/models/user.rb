@@ -98,7 +98,10 @@ class User
     fragments = []
     all_player_entries.each_with_index do|entry,i|
       if entry.action == :play
-        new_fragment = {song_id: entry.song_id, start_at: entry.timestamp, end_at: all_player_entries[i+1].timestamp }
+        start_at = entry.timestamp
+        end_at = all_player_entries[i+1] ? all_player_entries[i+1].timestamp : all_player_entries[-1].timestamp
+        new_fragment = {song_id: entry.song_id, start_at: start_at ,
+         end_at: end_at }
         fragments<<new_fragment
       end
     end

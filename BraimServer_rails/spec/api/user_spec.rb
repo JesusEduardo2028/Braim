@@ -85,7 +85,7 @@ describe 'Band', :type => :request do
             token = "braim_token=#{@credentials['access_token']}"
             per_page = 5
             data = "per_page=#{per_page}"
-
+            
             get "/api/v1/users/#{@user.username}/all_player_entries", "#{token}&#{data}"
 
             expect(response.status).to eq 200

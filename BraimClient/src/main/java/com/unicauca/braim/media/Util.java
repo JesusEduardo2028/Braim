@@ -10,10 +10,10 @@ package com.unicauca.braim.media;
  * @author jesus
  */
 public class Util {
-    public static String server_url = "http://0.0.0.0";
-    public static String api_port = ":3000";
-    
-    //public static String server_url = "http://104.40.69.119";
-    //public static String api_port = "";
-    public static String socket_port = ":8080";
+    //public static String server_url = "http://0.0.0.0";
+    //public static String api_port = ":3000";
+    //public static String socket_port = ":8080";
+    public static String server_url = "http://braim-stag.cloudapp.net";
+    public static String api_port = "";
+    public static String socket_port = "";
 }

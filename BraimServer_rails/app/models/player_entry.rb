@@ -1,6 +1,6 @@
 class PlayerEntry
   include Mongoid::Document
-  belongs_to :emo_session
+  belongs_to :braim_session
 
   field :user_id, type: BSON::ObjectId
   field :song_id, type: BSON::ObjectId

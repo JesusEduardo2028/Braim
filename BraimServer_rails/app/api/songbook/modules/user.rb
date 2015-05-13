@@ -67,11 +67,11 @@ module Songbook
             user = ::User.find_by(username: params[:username])
             present user, with:  Songbook::Entities::User
           end
-          desc 'returns all sessions from a user', {
-            entity: Songbook::Entities::Session,
+          desc 'returns all braim sessions from a user', {
+            entity: Songbook::Entities::BraimSession,
             notes: <<-NOTES
                ### Description
-                It returns all sessions from a user
+                It returns all braim sessions from a user
 
                 ### Example successful response
                     [
@@ -94,7 +94,7 @@ module Songbook
             use :username
             use :pagination
           end
-          get '/:username/sessions', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
+          get '/:username/braim_sessions', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
             content_type "text/json"
 
             user = ::User.find_by(username: params[:username])
@@ -102,12 +102,12 @@ module Songbook
             page = params[:page] || 1
             per_page = params[:per_page] || 10
             WillPaginate.per_page = per_page
-            sessions =  user.emo_sessions.page(page)
-            header 'total_pages', sessions.total_pages.to_s
-            present sessions, with:  Songbook::Entities::Session
+            braim_sessions =  user.braim_sessions.page(page)
+            header 'total_pages', braim_sessions.total_pages.to_s
+            present braim_sessions, with:  Songbook::Entities::BraimSession
           end
-          desc 'returns all emotional entries from a given user', {
-            entity: Songbook::Entities::Session,
+          desc 'returns all epoc entries from a given user', {
+            entity: Songbook::Entities::EpocEntry,
             notes: <<-NOTES
                ### Description
                 CAUTIONNN THIS MAY TAKE TIME!!!!!
@@ -128,18 +128,18 @@ module Songbook
             use :pagination
             use :username
           end
-          get '/:username/all_emo_entries', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
+          get '/:username/all_epoc_entries', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
             content_type "text/json"
             user = ::User.find_by(username: params[:username])
             page = params[:page] || 1
             per_page = params[:per_page] || 10
             WillPaginate.per_page = per_page
-            entries = user.all_emo_entries.page(page)
+            entries = user.all_epoc_entries.page(page)
             header 'total_pages', entries.total_pages.to_s
-            present entries, with:  Songbook::Entities::EmoEntry
+            present entries, with:  Songbook::Entities::EpocEntry
           end
           desc 'returns all player entries from a given user', {
-            entity: Songbook::Entities::Session,
+            entity: Songbook::Entities::BraimSession,
             notes: <<-NOTES
                ### Description
                 CAUTIONNN THIS MAY TAKE TIME!!!!!

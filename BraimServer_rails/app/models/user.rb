@@ -31,7 +31,7 @@ class User
   field :last_sign_in_ip,    type: String
 
   has_one :access_grant
-  has_many :emo_sessions
+  has_many :braim_sessions
 
   ## Confirmable
   # field :confirmation_token,   type: String
@@ -86,8 +86,8 @@ class User
 
 #----------------------- INSTANCE MEHOTDS -------------------------#
 
-  def all_emo_entries
-    entries = EmoEntry.where(user_id: self.id)
+  def all_epoc_entries
+    entries = EpocEntry.where(user_id: self.id)
   end
 
   def all_player_entries
@@ -119,6 +119,6 @@ class User
   end
 
   def emo_entries_by_date(start_at,end_at)
-    entries = EmoEntry.where(user_id: self.id , :timestamp => {'$gte' => start_at,'$lt' => end_at})
+    entries = EpocEntry.where(user_id: self.id , :timestamp => {'$gte' => start_at,'$lt' => end_at})
   end
 end

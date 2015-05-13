@@ -1,6 +1,6 @@
 module Songbook
   module Entities
-    class EmoEntry < Grape::Entity
+    class EpocEntry < Grape::Entity
       expose :nodes, documentation:{type: "array", desc: "an array of float values", example: "[]" }
       expose :timestamp,documentation:{type: "float", desc: "timestamp", example: "timestamp example"}
       expose :excitement,documentation:{type: "string", desc: "excitement", example: "0.34"}

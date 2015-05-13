@@ -133,10 +133,10 @@ public class BraimGui extends javax.swing.JFrame {
         } );
         
         try {
-            Session session = client.POST_Session(currentUser.getId(), token.getAccess_token());
+            Session session = client.POST_BraimSession(currentUser.getId(), token.getAccess_token());
             socket.connect();
             String session_json = new Gson().toJson(session);
-            socket.emit("register_session", session_json);
+            socket.emit("register_braim_session", session_json);
             lbl_session_id.setText(session.getId());
         } catch (IOException ex) {
             Logger.getLogger(BraimGui.class.getName()).log(Level.SEVERE, null, ex);

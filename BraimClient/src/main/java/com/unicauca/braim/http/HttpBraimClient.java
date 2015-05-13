@@ -132,16 +132,16 @@ public class HttpBraimClient {
         return user;
     }
     
-    public Session POST_Session(String user_id, String access_token) throws IOException {
+    public Session POST_BraimSession(String user_id, String access_token) throws IOException {
         Session session = null;
         Gson gson = new Gson();
         
-        String data= "?session[user_id]="+user_id;
+        String data= "?braim_session[user_id]="+user_id;
         String token_data = "&braim_token=" + access_token;
         
         
-        PostMethod method = new PostMethod(api_url + "/api/v1/sessions");
-        method.addParameter("session[user_id]",user_id);
+        PostMethod method = new PostMethod(api_url + "/api/v1/braim_sessions");
+        method.addParameter("braim_session[user_id]",user_id);
         method.addParameter("braim_token",access_token);
         method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
                 new DefaultHttpMethodRetryHandler(3, false));

@@ -1,8 +1,8 @@
-class EmoSession
+class BraimSession
   include Mongoid::Document
   before_create :set_time
 
-  has_many :emo_entries
+  has_many :epoc_entries
   has_many :player_entries
   belongs_to :user
 

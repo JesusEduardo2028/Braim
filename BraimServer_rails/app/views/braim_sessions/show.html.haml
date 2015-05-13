@@ -1,0 +1,13 @@
+%p#notice= notice
+.text-center
+  =link_to "EPOC Affectiv data", affectiv_braim_session_path(@braim_session), id: "button_nodes" ,class: "btn btn-#{params[:action] == 'affectiv' ? 'primary' : 'default'}"
+
+  =link_to "EPOC Raw data", raw_braim_session_path(@braim_session), id: "button_nodes" ,class: "btn btn-#{params[:action] == 'raw' ? 'primary' : 'default'}"
+
+#stock
+=render "raw_chart", locals: {entries: @entries} if params[:action] == "raw"
+=render "af_chart", locals: {entries: @entries} if params[:action] == "affectiv"
+
+= link_to 'Edit', edit_braim_session_path(@braim_session)
+\|
+= link_to 'Back', braim_sessions_path

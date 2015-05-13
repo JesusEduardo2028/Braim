@@ -4,27 +4,27 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var mongojs = require('mongojs');
 var ObjectId = mongojs.ObjectId
-var db = mongojs('songbook_development',['emo_entries','users', 'emo_sessions', 'player_entries']);
+var db = mongojs('songbook_development',['epoc_entries', 'player_entries']);
 
 
 io.on('connection', function(client){
 	//console.log('Client connected..');
-	client.on('register_session',function(session){
-		session_json = JSON.parse(session)
-		client.session_id = ObjectId(session_json["id"])
-		client.user_id = ObjectId(session_json["user_id"])
+	client.on('register_braim_session',function(braim_session){
+		braim_session_json = JSON.parse(braim_session)
+		client.braim_session_id = ObjectId(braim_session_json["id"])
+		client.user_id = ObjectId(braim_session_json["user_id"])
 		client.emit('init_capture')
-		console.log("NEW sesion:"+client.session_id+"user:"+client.user_id)
+		console.log("NEW braim sesion:"+client.braim_session_id+"user:"+client.user_id)
 	});
 
 	client.on('disconnect',function(name){
 	});
 
-	client.on('store_emo_info',function(emo_values){
-		if(emo_values!=null){
-			emo_values["emo_session_id"] = client.session_id
-			emo_values["user_id"] = client.user_id
-			db.emo_entries.save(emo_values, function(){
+	client.on('store_epoc_info',function(epoc_values){
+		if(epoc_values!=null){
+			epoc_values["braim_session_id"] = client.braim_session_id
+			epoc_values["user_id"] = client.user_id
+			db.epoc_entries.save(epoc_values, function(){
 				//console.log('entry saved');
 			});
 		}
@@ -32,7 +32,7 @@ io.on('connection', function(client){
 
 	client.on('store_player_info',function(player_values){
 		if(player_values!=null){
-			player_values["emo_session_id"] = client.session_id
+			player_values["braim_session_id"] = client.braim_session_id
 			player_values["user_id"] = client.user_id
 			db.player_entries.save(player_values, function(){
 				//console.log('entry saved');

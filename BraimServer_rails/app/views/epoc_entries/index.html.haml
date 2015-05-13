@@ -1,0 +1,17 @@
+%h1 Listing epoc_entries
+
+%table
+  %tr
+    %th
+    %th
+    %th
+
+  - @epoc_entries.each do |epoc_entry|
+    %tr
+      %td= link_to 'Show', epoc_entry
+      %td= link_to 'Edit', edit_epoc_entry_path(epoc_entry)
+      %td= link_to 'Destroy', epoc_entry, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New epoc entry', new_epoc_entry_path

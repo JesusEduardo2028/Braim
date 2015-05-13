@@ -1,0 +1,29 @@
+%p#notice= notice
+-@epoc_entry.nodes.each_with_index do|node,i|
+	%p
+		="Node #{i}:"
+		=node
+%p
+	Timestamp:
+	=@epoc_entry.timestamp
+%p
+	Engagement:
+	=@epoc_entry.engagement
+%p
+	Frustation:
+	=@epoc_entry.frustration
+%p
+	Meditation:
+	=@epoc_entry.meditation
+%p
+	Excitement:
+	=@epoc_entry.excitement
+%p
+	Email:
+	=@epoc_entry.email
+
+
+
+= link_to 'Edit', edit_epoc_entry_path(@epoc_entry)
+\|
+= link_to 'Back', epoc_entries_path

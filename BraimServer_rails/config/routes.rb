@@ -1,12 +1,12 @@
 Rails.application.routes.draw do
   resources :player_entries
 
-  resources :emo_sessions do 
+  resources :braim_sessions do 
     get 'raw' , on: :member
     get 'affectiv', on: :member
   end
 
-  resources :emo_entries
+  resources :epoc_entries
 
   resources :songs
 

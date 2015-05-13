@@ -1,0 +1,17 @@
+%h1 Listing Braim sessions
+
+%table
+  %tr
+    %th
+    %th
+    %th
+
+  - @braim_sessions.each do |braim_session|
+    %tr
+      %td= link_to 'Show', braim_session
+      %td= link_to 'Edit', edit_braim_session_path(braim_session)
+      %td= link_to 'Destroy', braim_session, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Braim session', new_braim_session_path

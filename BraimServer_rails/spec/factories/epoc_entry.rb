@@ -1,6 +1,6 @@
 FactoryGirl.define do
-  factory :emo_entry do
-    emo_session {FactoryGirl.build(:emo_session)}
+  factory :epoc_entry do
+    braim_session
     user_id {"user_id"}
     nodes {[]}
     timestamp {Time.now}

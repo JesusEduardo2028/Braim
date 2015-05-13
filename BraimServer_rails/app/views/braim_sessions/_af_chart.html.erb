@@ -5,13 +5,13 @@
         timezoneOffset: 5*60
       }
     });
-    $('#emo_stock').highcharts('StockChart', {
+    $('#epoc_stock').highcharts('StockChart', {
       rangeSelector : {
           selected : 1
       },
 
       title : {
-          text : "<%=@emo_session.user.username%> session at: <%=@emo_session.date%>"
+          text : "<%=@braim_session.user.username%> session at: <%=@braim_session.date%>"
       },
       chart : {
         height: 500,
@@ -61,7 +61,7 @@
             <% if entry.action == :play%>
               {
                 from: (new Date(<%=entry.timestamp%>)),
-                to: (new Date(<%=@player_entries[i+1] ? @player_entries[i+1].timestamp : @emo_entries[-1].timestamp%>)),
+                to: (new Date(<%=@player_entries[i+1] ? @player_entries[i+1].timestamp : @epoc_entries[-1].timestamp%>)),
                 color: "rgba(<%=rand(255)%>,<%=rand(255)%>,<%=rand(255)%>,0.1)",
                 label: {
                   text: "<%=entry.song.name%>",

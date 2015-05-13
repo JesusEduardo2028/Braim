@@ -1,6 +1,6 @@
 module Songbook
   module Entities
-    class Session < Grape::Entity
+    class BraimSession < Grape::Entity
       expose :id, documentation: { type: "string", desc: "id of the entry", example: '172a66834fb7802c28000003' } do |session, options|
         session.id.to_s
       end

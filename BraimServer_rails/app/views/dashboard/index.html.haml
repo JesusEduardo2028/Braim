@@ -6,18 +6,18 @@
         %tr
           %th #
           %th Date
-          %th Raw data
-          %th Emotional data
+          %th EPOC Affectiv
+          %th EPOC Raw Data
 
       %tbody
-        -@emo_sessions.each_with_index do|session,i|
+        -@braim_sessions.each_with_index do|braim_session,i|
           %tr
             %th{:scope => "row"}
               = i
             %td
-              =session.date
+              =braim_session.date
             %td
-              =link_to "view", affectiv_emo_session_path(session)
+              =link_to "view", affectiv_braim_session_path(braim_session)
             %td
-              =link_to "view",raw_emo_session_path(session)
+              =link_to "view",raw_braim_session_path(braim_session)
 

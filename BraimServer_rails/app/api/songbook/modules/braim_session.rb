@@ -1,6 +1,6 @@
 module Songbook
   module Modules
-    class Session < Grape::API
+    class BraimSession < Grape::API
       
       format :json
 
@@ -28,9 +28,9 @@ module Songbook
       end
 
       version :v1 do
-        resource :sessions do
-          desc 'returns all existent sessions', {
-            entity: Songbook::Entities::Session,
+        resource :braim_sessions do
+          desc 'returns all existent braim sessions', {
+            entity: Songbook::Entities::BraimSession,
             notes: <<-NOTES
               Returns all existent sessions paginated
             NOTES
@@ -44,14 +44,14 @@ module Songbook
             page = params[:page] || 1
             per_page = params[:per_page] || 10
             WillPaginate.per_page = per_page
-            sessions = ::EmoSession.page(page)
-            header 'total_pages', sessions.total_pages.to_s
-            present sessions, with: Songbook::Entities::Session
+            braim_sessions = ::BraimSession.page(page)
+            header 'total_pages', braim_sessions.total_pages.to_s
+            present braim_sessions, with: Songbook::Entities::BraimSession
           end
-          desc 'returns one existent session by :id', {
-            entity: Songbook::Entities::Session,
+          desc 'returns one existent braim session by :id', {
+            entity: Songbook::Entities::BraimSession,
             notes: <<-NOTES
-              Returns one existent session by :id
+              Returns one existent braim session by :id
             NOTES
           }
           params do
@@ -60,21 +60,21 @@ module Songbook
           end
           get '/:id', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
             content_type "text/json"
-            session = ::EmoSession.find(params[:id])
-            present session, with: Songbook::Entities::Session
+            braim_session = ::BraimSession.find(params[:id])
+            present braim_session, with: Songbook::Entities::BraimSession
           end
-          desc 'returns all emotional entries from a given session', {
-            entity: Songbook::Entities::Session,
+          desc 'returns all epoc entries from a given braim session', {
+            entity: Songbook::Entities::EpocEntry,
             notes: <<-NOTES
                ### Description
-                It returns all emotional entries from a session
+                It returns all epoc entries from a session
 
                 ### Example successful response
                     [
                       {
-                        emo entry item
+                        epoc entry item
                       },
-                        emo entry item
+                        epoc entry item
                       {
                     ]
             NOTES
@@ -84,18 +84,18 @@ module Songbook
             use :id
             use :pagination
           end
-          get '/:id/emo_entries', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
+          get '/:id/epoc_entries', http_codes: [ [200, "Successful"], [401, "Unauthorized"] ] do
             content_type "text/json"
             page = params[:page] || 1
             per_page = params[:per_page] || 10
             WillPaginate.per_page = per_page
-            session = ::EmoSession.find(params[:id])
-            emo_entries = session.emo_entries.page(page)
-            header 'total_pages', emo_entries.total_pages.to_s
-            present emo_entries, with:  Songbook::Entities::EmoEntry
+            braim_session = ::BraimSession.find(params[:id])
+            epoc_entries = braim_session.epoc_entries.page(page)
+            header 'total_pages', epoc_entries.total_pages.to_s
+            present epoc_entries, with:  Songbook::Entities::EpocEntry
           end
-          desc 'returns all player entries from a given session', {
-            entity: Songbook::Entities::Session,
+          desc 'returns all player entries from a given braim session', {
+            entity: Songbook::Entities::PlayerEntry,
             notes: <<-NOTES
                ### Description
                 It returns all player entries from a session
@@ -120,18 +120,18 @@ module Songbook
             page = params[:page] || 1
             per_page = params[:per_page] || 10
             WillPaginate.per_page = per_page
-            session = ::EmoSession.find(params[:id])
-            player_entries = session.player_entries.page(page)
+            braim_session = ::BraimSession.find(params[:id])
+            player_entries = braim_session.player_entries.page(page)
             header 'total_pages', player_entries.total_pages.to_s
             present player_entries, with:  Songbook::Entities::PlayerEntry
           end
 
           # POST
-          desc 'creates a new session', {
+          desc 'creates a new braim session', {
               entity: Songbook::Entities::Band,
               notes: <<-NOTE
                 ### Description
-                It creates a new band record and returns its current representation.
+                It creates a new session and returns its current representation.
 
                 ### Example successful response
 
@@ -145,7 +145,7 @@ module Songbook
             }
           params do
             use :auth
-            optional :session, type: Hash do
+            optional :braim_session, type: Hash do
               requires :user_id, type: String, desc: 'User id of user that create the session', documentation: { example: 'Rock' }
             end
           end
@@ -156,11 +156,11 @@ module Songbook
             [404, "Entry not found"],
           ]  do
             content_type "text/json"
-            session_params = params[:session]
-            user = ::User.find(session_params['user_id'])
-            session = user.emo_sessions.build
-            if session.save
-              present session, with: Songbook::Entities::Session
+            braim_session_params = params[:braim_session]
+            user = ::User.find(braim_session_params['user_id'])
+            braim_session = user.braim_sessions.build
+            if braim_session.save
+              present braim_session, with: Songbook::Entities::BraimSession
             else
               error!(entry.errors, 400)
             end

@@ -127,6 +127,7 @@ public class BraimGui extends javax.swing.JFrame {
 
             @Override
             public void call(Object... os) {
+                System.out.println("RECIBIENDO EPOC INFO !!");
                 menu_item_emo_device.setEnabled(false);
                 (emotivTask = new EmotivEngineTask()).execute();
             }
@@ -1033,7 +1034,7 @@ public class BraimGui extends javax.swing.JFrame {
             json_values.put("engagement", emoValues.affectivEnagement);
             json_values.put("nodes", emoValues.eegNodes);
             json_values.put("timestamp",lDateTime);
-            socket.emit("store_emo_info", json_values);
+            socket.emit("store_epoc_info", json_values);
         }
 
         @Override

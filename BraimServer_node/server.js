@@ -4,7 +4,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var mongojs = require('mongojs');
 var ObjectId = mongojs.ObjectId
-var db = mongojs('songbook_development',['epoc_entries', 'player_entries']);
+var db = mongojs('braimdb',['epoc_entries', 'player_entries']);
 
 
 io.on('connection', function(client){

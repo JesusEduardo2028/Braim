@@ -21,23 +21,21 @@ io.on('connection', function(client){
 	});
 
 	client.on('store_epoc_info',function(epoc_values){
-		console.log("llego epoc info")
 		if(epoc_values!=null){
 			epoc_values["braim_session_id"] = client.braim_session_id
 			epoc_values["user_id"] = client.user_id
 			db.epoc_entries.save(epoc_values, function(){
-				console.log('epoc entry saved');
+				//console.log('epoc entry saved');
 			});
 		}
 	});
 
 	client.on('store_player_info',function(player_values){
-		console.log("llego player info")
 		if(player_values!=null){
 			player_values["braim_session_id"] = client.braim_session_id
 			player_values["user_id"] = client.user_id
 			db.player_entries.save(player_values, function(){
-				console.log('player entry saved');
+				//console.log('player entry saved');
 			});
 		}
 	});

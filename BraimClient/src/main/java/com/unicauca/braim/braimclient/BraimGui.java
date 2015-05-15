@@ -127,7 +127,7 @@ public class BraimGui extends javax.swing.JFrame {
 
             @Override
             public void call(Object... os) {
-                System.out.println("RECIBIENDO EPOC INFO !!");
+                System.out.println("init epoc capture");
                 menu_item_emo_device.setEnabled(false);
                 (emotivTask = new EmotivEngineTask()).execute();
             }

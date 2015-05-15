@@ -15,5 +15,5 @@ public class Util {
     //public static String socket_port = ":8080";
     public static String server_url = "http://braim-stag.cloudapp.net";
     public static String api_port = "";
-    public static String socket_port = "";
+    public static String socket_port = ":8080";
 }
